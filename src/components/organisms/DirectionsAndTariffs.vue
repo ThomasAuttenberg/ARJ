@@ -66,6 +66,7 @@ function getEnumerationComponent(text: string) : IProvidedComponent {
 
 <style scoped>
 .directions-and-traffic-titles{
+  align-self: center;
   max-width: 1180px;
   width: 100%;
   display: flex;
@@ -95,13 +96,14 @@ function getEnumerationComponent(text: string) : IProvidedComponent {
   color: #3F4657;
   background: white;
   display: flex;
-  flex-wrap: wrap; /* Позволяет карточкам переноситься на новую строку */
-  gap: 40px; /* Зазор между карточками */
+  flex-direction: column;
+  gap: 40px;
   padding: 100px 20px;
   justify-content: center;
 }
 .directions-and-traffic-cards-container{
   max-width: 1180px;
+  align-self: center;
   display: flex;
   flex-wrap: wrap; /* Позволяет карточкам переноситься на новую строку */
   gap: 20px; /* Зазор между карточками */
@@ -155,6 +157,11 @@ function getEnumerationComponent(text: string) : IProvidedComponent {
   }
   .directions-and-traffic-container{
     padding: 50px 20px;
+  }
+}
+@media (width >= 1010px) {
+  .directions-and-traffic-card.last-card:deep(.card-with-ico-enumeration-item){
+    justify-content: left;
   }
 }
 </style>

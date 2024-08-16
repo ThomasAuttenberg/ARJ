@@ -12,6 +12,7 @@ defineProps({
 
 <template>
   <div class="faq-block-container">
+    <div class = "faq-block-content">
     <div class = "faq-block-title">
       {{title}}
     </div>
@@ -20,6 +21,7 @@ defineProps({
         <FAQDetails :title="item.title" :content="item.content"/>
         <div v-if="key != items.length-1" class="faq-block-items-divider"/>
       </div>
+    </div>
     </div>
   </div>
 </template>
@@ -37,6 +39,8 @@ defineProps({
   background: #E0E0E0;
 }
 .faq-block-container{
+  display: flex;
+  justify-content: center;
   font-family: var(--font-family);
   color: #3F4657;
 }
@@ -45,14 +49,15 @@ defineProps({
   font-size: 32px;
   text-transform: uppercase;
 }
-.faq-block-container {
+.faq-block-content {
   padding: 100px 20px;
   display: flex;
   flex-direction: column;
   gap: 40px;
+  width: min(100%, 1180px);
 }
 @media (768px <= width < 1181px){
-  .faq-block-container {
+  .faq-block-content {
     gap: 30px;
     padding: 70px 20px;
   }
@@ -62,7 +67,7 @@ defineProps({
   }
 }
 @media (width < 768px) {
-  .faq-block-container {
+  .faq-block-content {
     gap: 30px;
     padding: 50px 20px;
   }
