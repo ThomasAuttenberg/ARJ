@@ -8,20 +8,21 @@ import MailIco from '@/components/atoms/icons/MailIco.vue'
 import HeaderDesktop from '@/components/organisms/HeaderDesktop.vue'
 import { ref } from 'vue'
 import router from '@/router'
-import Button from '@/components/atoms/Button.vue'
+import Button from '@/components/atoms/PrettyButton.vue'
 
 const activeRouteId = ref(0);
 function a(){console.log("clicked");}
+function onWatchingElementChange(index:any){activeRouteId.value=index; console.log(activeRouteId.value);}
 </script>
 
 <template>
   <header>
     <HeaderDesktop id="header-desktop"
       :routes="[
-        {title: 'Главная', route:'/'},
-        {title: 'Направления и тарифы', route:'/1'},
-        {title: 'Часто задаваемые вопросы', route:'/2'},
-        {title: 'Адреса терминалов партнера', route:'/3'},
+        {title: 'Главная', route:'#main'},
+        {title: 'Направления и тарифы', route:'#directions'},
+        {title: 'Часто задаваемые вопросы', route:'#faq'},
+        {title: 'Адреса терминалов партнера', route:'#agencies'},
       ]"
       :active-route-id = "activeRouteId"
       :left-side-components="[
@@ -36,7 +37,7 @@ function a(){console.log("clicked");}
       @logo-click = "router.push('/')"
     />
   </header>
-  <RouterView id="app_component"/>
+  <RouterView id="app_component" @watchingElement="onWatchingElementChange"/>
   <footer>
 
   </footer>

@@ -42,7 +42,7 @@ defineProps({
   display: flex;
   justify-content: center;
   font-family: var(--font-family);
-  color: #3F4657;
+  color: var(--text-color);
 }
 .faq-block-title {
   font-weight: 700;

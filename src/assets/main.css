@@ -6,6 +6,7 @@
 }
 :root{
     --font-family: "Roboto", sans-serif;
+    --text-color: #3F4657;
 }
 html{
     background: #f8f8f8;

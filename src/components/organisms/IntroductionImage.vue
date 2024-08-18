@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import MainImage from '@/components/organisms/IntroductionImage.vue'
-import Button from '@/components/atoms/Button.vue'
+import Button from '@/components/atoms/PrettyButton.vue'
 </script>
 
 <template>
@@ -35,7 +35,6 @@ import Button from '@/components/atoms/Button.vue'
 }
 .mainImageContent-title{
   width: 100%;
-  color: #3F4657;
   padding-top: 100px;
   text-transform: uppercase;
   text-align: center;
@@ -43,6 +42,7 @@ import Button from '@/components/atoms/Button.vue'
   font-size: 40px;
 }
 .mainImageContent{
+  color: var(--text-color);;
   padding-left: 20px;
   padding-right: 20px;
   font-family: var(--font-family);

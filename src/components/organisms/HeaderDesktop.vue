@@ -22,6 +22,7 @@ const props = defineProps({
 
 
 const menuState = ref(false);
+
 function menuStateChanger(val : Event){
   menuState.value = (val.target as HTMLInputElement).checked;
 }
@@ -150,11 +151,12 @@ function menuStateChanger(val : Event){
   cursor: pointer;
 }
 .header-router-links{
+  height: 20px;
+  align-items: center;
   display: flex;
 }
 .header-router-links.desktop {
   justify-content: space-between;
-  padding-bottom: 14px;
 }
 .header-separator {
   background: #e0e0e0;
@@ -186,7 +188,7 @@ function menuStateChanger(val : Event){
   display: flex;
   flex-direction: column;
   gap: 15px;
-  padding: 10px 20px 0 20px;
+  padding: 10px 20px 20px 20px;
   top: 0;
   width: 1180px;
 }
@@ -197,6 +199,7 @@ function menuStateChanger(val : Event){
   }
   .header-header-desktop{
     gap:10px;
+    padding: 10px 20px 0 20px;
   }
   .header-content-block{
     gap: 20px;
@@ -205,7 +208,7 @@ function menuStateChanger(val : Event){
     display: none;
   }
   .height-filler{
-    height: 127px;
+    height: 113px;
   }
 }
 @media (min-width: 1181px){
@@ -222,7 +225,7 @@ function menuStateChanger(val : Event){
     display: none;
   }
   .height-filler{
-    height: 137px;
+    height: 132px;
   }
 }
 @media (width < 768px) {
@@ -237,14 +240,16 @@ function menuStateChanger(val : Event){
   }
   .header-header-desktop{
     gap:10px;
+    padding: 10px 20px 0 20px;
   }
   .height-filler{
-    height: 85px;
+    height: 50px;
   }
   .header-logo-logo{
     width: 106px;
     height: 30px;
   }
+
 }
 
 .header-header-container{

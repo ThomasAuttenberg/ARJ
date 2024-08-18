@@ -14,6 +14,7 @@ defineProps({
 
 <style scoped>
   .button_btn_btn {
+    height: 51px;
     transition: 0.2s;
     font-family: var(--font-family);
     font-size: 15px;

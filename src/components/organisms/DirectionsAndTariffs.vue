@@ -5,7 +5,7 @@ import PhoneIco from '@/components/atoms/icons/PhoneIco.vue'
 import LinkWithIcon from '@/components/molecules/LinkWithIcon.vue'
 import GeoIco from '@/components/atoms/icons/GeoIco.vue'
 import type IProvidedComponent from '@/hooks/IProvidedComponent'
-import Button from '@/components/atoms/Button.vue'
+import Button from '@/components/atoms/PrettyButton.vue'
 import RuKazakhMap from '../atoms/icons/DirectionsAndTraffic/RuKazakhMap.vue'
 import FlyingBox from '@/components/atoms/icons/DirectionsAndTraffic/FlyingBox.vue'
 import BoxLamp from '@/components/atoms/icons/DirectionsAndTraffic/BoxLamp.vue'
@@ -77,7 +77,6 @@ function getEnumerationComponent(text: string) : IProvidedComponent {
   font-weight: 700;
   font-size: 32px;
   text-transform: uppercase;
-  color: #3F4657;
 }
 .directions-and-traffic-titles-subtitle{
   font-size: 15px;
@@ -93,7 +92,7 @@ function getEnumerationComponent(text: string) : IProvidedComponent {
 }
 .directions-and-traffic-container {
   font-family: var(--font-family);
-  color: #3F4657;
+  color: var(--text-color);
   background: white;
   display: flex;
   flex-direction: column;
@@ -162,6 +161,9 @@ function getEnumerationComponent(text: string) : IProvidedComponent {
 @media (width >= 1010px) {
   .directions-and-traffic-card.last-card:deep(.card-with-ico-enumeration-item){
     justify-content: left;
+  }
+  .hidden{
+    display: block;
   }
 }
 </style>

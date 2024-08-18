@@ -5,10 +5,16 @@
   "compilerOptions": {
     "composite": true,
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
-
+    "typeRoots": [
+      "./node_modules/@yandex/ymaps3-types"
+    ],
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
-    }
+      "@/*": ["./src/*"],
+      "ymaps3": [
+        "./node_modules/@yandex/ymaps3-types"
+      ]
+    },
+
   }
 }
