@@ -2,10 +2,17 @@
 
 import PrettyInput from '@/components/atoms/PrettyInput.vue'
 import PrettyButton from '@/components/atoms/PrettyButton.vue'
+import { mailValidation, phoneValidation } from '@/hooks/validators'
+import { ref } from 'vue'
 
 const name = defineModel<string>('mew');
 const phone = defineModel<string>('phone');
 const email = defineModel<string>('email');
+const emits = defineEmits(['callModalWindow']);
+function callModalWindow(){
+  emits('callModalWindow',{ name:name.value, phone:phone.value, email:email.value, });
+}
+
 
 </script>
 
@@ -22,13 +29,13 @@ const email = defineModel<string>('email');
   <div class = "transport-calculation-block-form-wrapper">
     <div class="transport-calculation-block-form">
       <div class = "transport-calculation-block-inputs">
-        <PrettyInput v-model:input-val="name" class="transport-calculation-block-form-input" placeholder="Ваше имя"/>
-        <PrettyInput v-model:input-val="phone" class="transport-calculation-block-form-input" placeholder="+7 (xxx) xxx xx xx"/>
-        <PrettyInput v-model:input-val="email" class="transport-calculation-block-form-input" placeholder="Почта"/>
+        <PrettyInput input-id="transport-calculation-name" v-model:input-val="name" class="transport-calculation-block-form-input" placeholder="Ваше имя"/>
+        <PrettyInput input-id="transport-calculation-phone" :validator="phoneValidation" v-model:input-val="phone" class="transport-calculation-block-form-input" placeholder="+7 (xxx) xxx xx xx"/>
+        <PrettyInput input-id="transport-calculation-email" :validator="mailValidation" v-model:input-val="email" class="transport-calculation-block-form-input" placeholder="Почта"/>
       </div>
       <div>
         <span style="margin-right: 5px">+</span>
-        Уточнить детали заявки
+        <a class="transport-calculations-details" @click="callModalWindow">Уточнить детали заявки</a>
       </div>
       <PrettyButton text="Заказать грузоперевозку"/>
     </div>
@@ -40,6 +47,10 @@ const email = defineModel<string>('email');
 </template>
 
 <style scoped>
+.transport-calculations-details{
+  cursor: pointer;
+  text-decoration: underline;
+}
 .policy-accepting-text{
   padding-top: 10px;
   font-size: 12px;
@@ -75,6 +86,9 @@ const email = defineModel<string>('email');
   gap:10px;
   justify-content: center;
   width: 100%;
+}
+.transport-calculation-block-inputs:deep(.input-wrapper.error > .input){
+  outline: none;
 }
 .transport-calculation-block-text{
   display: flex;

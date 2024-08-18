@@ -4,11 +4,11 @@ import CardWithIco from '@/components/molecules/CardWithIco.vue'
 import PhoneIco from '@/components/atoms/icons/PhoneIco.vue'
 import LinkWithIcon from '@/components/molecules/LinkWithIcon.vue'
 import GeoIco from '@/components/atoms/icons/GeoIco.vue'
-import type IProvidedComponent from '@/hooks/IProvidedComponent'
 import Button from '@/components/atoms/PrettyButton.vue'
 import RuKazakhMap from '../atoms/icons/DirectionsAndTraffic/RuKazakhMap.vue'
 import FlyingBox from '@/components/atoms/icons/DirectionsAndTraffic/FlyingBox.vue'
 import BoxLamp from '@/components/atoms/icons/DirectionsAndTraffic/BoxLamp.vue'
+import type { IProvidedComponent } from '@/hooks/types'
 
 function getEnumerationComponent(text: string) : IProvidedComponent {
   return {component: LinkWithIcon, props: {text: text, ico: GeoIco}}

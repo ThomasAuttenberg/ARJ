@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import type { Component, PropType } from 'vue'
-import type IProvidedComponent from '@/hooks/IProvidedComponent'
+import type {IProvidedComponent} from '@/hooks/types'
 
 defineProps({
   ico: {type: Object as PropType<Component>, required:true},

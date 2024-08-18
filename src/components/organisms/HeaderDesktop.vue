@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { RouterLink } from 'vue-router'
 import TizaLogo from '@/components/atoms/TizaLogo.vue'
-import { type Component, type PropType, ref } from 'vue'
-import type IProvidedComponent from '@/hooks/IProvidedComponent'
+import { type Component, computed, nextTick, type PropType, ref, type VNodeRef } from 'vue'
+import type {IProvidedComponent} from '@/hooks/types'
 
 interface IRoutesProp{
   route: string,
+  anchor?: string
   title: string,
 }
 
@@ -20,17 +21,44 @@ const props = defineProps({
   rightSideSeparatedComponent: {type: Object as PropType<IProvidedComponent>},
 });
 
-
+const menuRef = ref<VNodeRef | null>(null);
 const menuState = ref(false);
+const wrapper = ref<VNodeRef | null>(null);
 
 function menuStateChanger(val : Event){
   menuState.value = (val.target as HTMLInputElement).checked;
+  if(menuState.value){
+    document.body.classList.add('body-no-scroll');
+  }else{
+    document.body.classList.remove('body-no-scroll');
+  }
 }
 
+window.addEventListener('resize', ()=>{
+  if(window.matchMedia("(min-width: 1181px)").matches){
+    document.body.classList.remove('body-no-scroll');
+  }
+});
+
+function onRouterLinkClick(val:number){
+  setTimeout(()=> {
+    const routes = props.routes as IRoutesProp[];
+    if (routes[val].anchor) {
+      let element = document.getElementById(routes[val].anchor as string);
+      let top = element?.offsetTop;
+      if (top)
+        window.scrollTo(0, top - (wrapper.value as HTMLElement).getBoundingClientRect().height);
+      if(menuState.value){
+        menuState.value = false;
+        (menuRef.value as HTMLInputElement).checked = false;
+      }
+    }
+  });
+}
 </script>
 
 <template>
-  <div class = "raz_dwa_tri">
+  <div ref="wrapper" class = "header-useless-wrapper" >
   <div class = "height-filler"/>
   <div class="header-header-container">
     <div class ="header-header-block">
@@ -60,7 +88,7 @@ function menuStateChanger(val : Event){
             v-on="rightSideSeparatedComponent?.eventListeners ? rightSideSeparatedComponent.eventListeners : {}"/>
         </div>
         <div class="not-desktop">
-        <input type="checkbox" @change="menuStateChanger" id="burger-checkbox" class="burger-checkbox">
+        <input ref="menuRef" type="checkbox" @change="menuStateChanger" id="burger-checkbox" class="burger-checkbox">
         <label class="burger" for="burger-checkbox">
           <span class="middle"></span>
         </label>
@@ -69,14 +97,14 @@ function menuStateChanger(val : Event){
     </div>
     <div class ="header-separator desktop"/>
     <div class="header-router-links desktop">
-      <RouterLink v-for="(route,key) in props.routes" :key :to="route.route" :class="{active:key==props.activeRouteId}" >{{route.title}}</RouterLink>
+      <RouterLink @click="onRouterLinkClick(key)" v-for="(route,key) in props.routes" :key :to="route.route" :class="{active:key==props.activeRouteId}" >{{route.title}}</RouterLink>
     </div>
       <div class="not-desktop"/>
     </div>
     </div>
     <div class = "header-menu not-desktop" :class="{active:menuState}">
       <div class = "header-menu-routes header-router-links">
-        <RouterLink v-for="(route,key) in props.routes" :key :to="route.route" :class="{active:key==props.activeRouteId}" >{{route.title}}</RouterLink>
+        <RouterLink @click="onRouterLinkClick(key)" v-for="(route,key) in props.routes" :key :to="route.route" :class="{active:key==props.activeRouteId}" >{{route.title}}</RouterLink>
       </div>
       <div class = "header-menu-links mobile">
         <div v-if=rightSideSeparatedComponent class="header-menu-separated-component">
@@ -94,8 +122,6 @@ function menuStateChanger(val : Event){
 </template>
 
 <style scoped>
-
-
 
 .header-menu-separated-component{
   padding-bottom: 40px;
@@ -133,7 +159,7 @@ function menuStateChanger(val : Event){
   top: 100%;
   right: -100%;
   width: 100%;
-  height: calc(100vh - 100%);
+  height: calc(100 * var(--vh, 1vh) - 100%);
   background: #FFFFFF;
   transition: right 0.2s;
 }

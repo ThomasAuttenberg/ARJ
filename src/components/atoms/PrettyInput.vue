@@ -1,12 +1,14 @@
 <script setup lang="ts">
 
-import { type PropType, ref, type VNodeRef, watch } from 'vue'
+import { computed, onMounted, type PropType, ref, type VNodeRef, watch } from 'vue'
 type Validator = (val: string|undefined) => boolean;
 const props = defineProps({
+  inputId: {type: String},
   placeholder: {type: String, required: false, default: ''},
   validator: {type: Function as PropType<Validator>},
   inputError: {type: Boolean, default: false},
-  allowedPattern: {type:RegExp, required:false}
+  allowedPattern: {type:RegExp, required:false},
+  type : {type: String}
 });
 
 const isFocus = ref(false);
@@ -15,12 +17,18 @@ const isComplete  = ref(Boolean(inputVal.value?.length));
 const isError = defineModel<boolean>('inputError');
 const inptRef = ref<VNodeRef | null>(null);
 
-watch(inputVal, (value)=>{
+const validate = (value:string|undefined)=>{
   if(props.validator) {
     isError.value = !props.validator(value);
   }
   isComplete.value = !!value?.length;
+}
+watch(inputVal, (value)=>{
+  validate(value);
 });
+onMounted(()=>{
+  validate(inputVal.value);
+})
 
 function onRemovalBtnClick(){
   inputVal.value = '';
@@ -41,11 +49,11 @@ function setCursorToEnd(event: Event) {
 <template>
   <div class = "input-wrapper" :class="{focus:isFocus, error:isError, complete:isComplete}">
     <span v-if="isFocus || isComplete" class = "additionalPlaceholder">{{placeholder}}</span>
-    <input ref = "inptRef" class="input" value='' v-model="inputVal" :placeholder="!isFocus ? placeholder : ''"
+    <input :id="inputId" :type ref = "inptRef" class="input" value='' v-model="inputVal" :placeholder="!isFocus ? placeholder : ''"
            @focusin="isFocus = true; setCursorToEnd($event)"
            @focusout="isFocus = false;" />
 
-    <span v-if="isComplete" class = "valRemoval" @click="onRemovalBtnClick">×</span>
+    <span v-if="isComplete" class = "valRemoval" @click="onRemovalBtnClick"></span>
   </div>
 </template>
 
@@ -66,6 +74,7 @@ function setCursorToEnd(event: Event) {
   position: relative;
 }
 .input{
+  font-family: var(--font-family);
   min-width:220px;
   width: 100%;
   padding: 15px 35px 15px 25px;
@@ -91,22 +100,20 @@ function setCursorToEnd(event: Event) {
   padding: 25px 35px 15px 25px;
 }
 .input:focus{
-  outline: 1px solid #3F4657;
+  outline: none;
 }
 .input-wrapper:not(.error):hover{
-  border-radius: 10px;
-  outline: 1px solid #3F4657;
+  border-radius: 10px;;
 }
 .valRemoval{
+  width: 30px;
+  height: 30px;
   position: absolute;
   right: 10px;
   top: 10px;
-  content:"×";
-  font-size: 30px;
+  background: url("@/assets/icons/valRemoval.svg") no-repeat 100% 100%;
 }
 .valRemoval:hover{
   cursor: pointer;
-  font-size:35px;
-  top: 8px;
 }
 </style>

@@ -11,30 +11,32 @@ const handlersMap : Map<HTMLElement, [Function, number]> = new Map();
 
 
 const observer = new IntersectionObserver((entries)=>{
-  entries.forEach(entry => {
-    const el = entry.target as HTMLElement;
-    if (entry.isIntersecting) {
-      visibleElements = visibleElements.filter(item => item !== el);
-      visibleElements.push(el);
-    }else{
-      visibleElements = visibleElements.filter(item => item !== el);
-    }
-    let topElPos = 9999999;
-    let topEl : HTMLElement | null = null;
-    visibleElements.forEach((item)=>{
-      console.log(item.getBoundingClientRect().top + ' ' + item.classList)
-      const itemTop = item.getBoundingClientRect().top;
-      if(itemTop < topElPos && itemTop >= 0){
-        topElPos = itemTop;
-        topEl = item;
+  //window.requestIdleCallback(()=> {
+    entries.forEach(entry => {
+      const el = entry.target as HTMLElement;
+      if (entry.isIntersecting) {
+        visibleElements = visibleElements.filter(item => item !== el);
+        visibleElements.push(el);
+      } else {
+        visibleElements = visibleElements.filter(item => item !== el);
       }
-    });
-    console.log(topEl ? (topEl as HTMLElement).classList : 'null' );
-    if(topEl) {
-      const handler = handlersMap.get(topEl);
-      if(handler) handler[0](handler[1]);
-    }
-  })
+      let topElPos = 9999999;
+      let topEl: HTMLElement | null = null;
+      visibleElements.forEach((item) => {
+        //console.log(item.getBoundingClientRect().top + ' ' + item.classList)
+        const itemTop = item.getBoundingClientRect().top;
+        if (itemTop < topElPos && itemTop >= 0) {
+          topElPos = itemTop;
+          topEl = item;
+        }
+      });
+      //console.log(topEl ? (topEl as HTMLElement).classList : 'null');
+      if (topEl) {
+        const handler = handlersMap.get(topEl);
+        if (handler) handler[0](handler[1]);
+      }
+    })
+  //});
 }, options);
 
 export default {

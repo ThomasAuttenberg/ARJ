@@ -7,7 +7,12 @@
 :root{
     --font-family: "Roboto", sans-serif;
     --text-color: #3F4657;
+    --vh: 1vh;
 }
 html{
     background: #f8f8f8;
+    scroll-behavior: smooth;
+}
+.body-no-scroll{
+    overflow: hidden;
 }
