@@ -1,22 +1,25 @@
 <script setup lang="ts">
-import { RouterLink, RouterView, useRoute } from 'vue-router'
+import { RouterView, useRoute } from 'vue-router'
 import TizaLogo from '@/components/atoms/TizaLogo.vue'
 import LinkWithIcon from '@/components/molecules/LinkWithIcon.vue'
 import GeoIco from '@/components/atoms/icons/GeoIco.vue'
 import PhoneIco from '@/components/atoms/icons/PhoneIco.vue'
 import MailIco from '@/components/atoms/icons/MailIco.vue'
-import HeaderDesktop from '@/components/organisms/HeaderDesktop.vue'
-import { ref, watch } from 'vue'
+import HeaderDesktop from '@/components/organisms/FlexibleHeader.vue'
+import { ref, type VNodeRef, watch } from 'vue'
 import router from '@/router'
-import Button from '@/components/atoms/PrettyButton.vue'
 import PrettyFooter from '@/components/organisms/PrettyFooter.vue'
 import ModalFieldsWindow from '@/components/organisms/ModalFieldsWindow.vue'
 import type { ModalWindowPropsType } from '@/hooks/types'
+import PrettyButtonFlexible from '@/components/atoms/PrettyButtonFlexible.vue'
+import ModalNotification from '@/components/atoms/ModalNotification.vue'
 
 const activeRouteId = ref(0);
 const isModalFieldsShowing = ref(false);
 const route = useRoute();
-function a(){console.log("clicked"); isModalFieldsShowing.value=true;}
+
+
+function onHeaderButtonClicked(){isModalFieldsShowing.value=true;}
 function onWatchingElementChange(index:any){activeRouteId.value=index;}
 
 function scrollToTop(){
@@ -42,11 +45,35 @@ function updateViewportHeight() {
 
 const modalWindowProps : ModalWindowPropsType = {};
 function callOrderModalWindow(arg: ModalWindowPropsType) {
-  modalWindowProps.name = arg.name;
-  modalWindowProps.phone = arg.phone;
-  modalWindowProps.email = arg.email;
+  modalWindowProps.name = arg?.name;
+  modalWindowProps.phone = arg?.phone;
+  modalWindowProps.email = arg?.email;
+  modalWindowProps.success = arg?.success;
   isModalFieldsShowing.value=true;
 }
+
+const modalFieldsWindowResult = ref<Record<string, any>>({});
+const isWarning = ref(false);
+const notificationWindow = ref<VNodeRef | null>(null);
+
+const sendWarningNotification = (text:string, delay?:number)=>{
+  isWarning.value = true;
+  const delay_ = delay || 2000;
+  notificationWindow.value.sendNotification(text,delay_);
+}
+
+const sendSuccessNotification = (text:string, delay?:number)=>{
+  isWarning.value = false;
+  const delay_ = delay || 2000;
+  notificationWindow.value.sendNotification(text,delay_);
+}
+
+function onModalFieldsWindowSubmit(val:Record<string, any>){
+  modalFieldsWindowResult.value = val;
+  isModalFieldsShowing.value=false;
+}
+
+
 </script>
 
 <template>
@@ -60,32 +87,71 @@ function callOrderModalWindow(arg: ModalWindowPropsType) {
       ]"
       :active-route-id = "activeRouteId"
       :left-side-components="[
-        {component: LinkWithIcon, props: {ico: GeoIco, text: 'г. Алматы, ст. Алматы-2'}}
+        {component: LinkWithIcon, props: {ico: GeoIco, text: 'г. Алматы, ст. Алматы-2',}}
       ]"
       :right-side-components="[
-        {component: LinkWithIcon, props: {ico: PhoneIco, text: '+7 (777) 722 17 04'}},
-        {component: LinkWithIcon, props: {ico: MailIco, text: 'acs.sv@mail.ru'}},
+        {component: LinkWithIcon, props: {ico: PhoneIco, text: '+7 (777) 722 17 04', link:'tel:+7 (777) 722 17 04'}},
+        {component: LinkWithIcon, props: {ico: MailIco, text: 'sale@avtorailjet.kz',link:'mailto:sale@avtorailjet.kz'}},
       ]"
       :logo = "{component: TizaLogo}"
-      :right-side-separated-component="{component: Button, props:{text: 'Заказать грузоперевозку'}, eventListeners: {click:a}}"
+      :right-side-separated-component="{component: PrettyButtonFlexible, props:{text: 'Заказать грузоперевозку'}, eventListeners: {click:onHeaderButtonClicked}}"
       @logo-click = "router.push('/'); scrollToTop();"
     />
   </header>
+  <div class="notification-wrapper">
+    <ModalNotification class="modal-fields-notification" :class="{warning:isWarning, success: !isWarning}" ref="notificationWindow"/>
+  </div>
+  <ModalFieldsWindow
+    v-if="isModalFieldsShowing"
+    :modalWindowProps="modalWindowProps"
+    @escape="isModalFieldsShowing=false"
+    @submit="onModalFieldsWindowSubmit"
+    @successNotificationRequest="sendSuccessNotification"
+    @warningNotificationRequest="sendWarningNotification"
+  />
+  <div class="app-component-wrapper">
   <RouterView id="app_component"
               @watchingElement="onWatchingElementChange"
               :modalWindowShowing="isModalFieldsShowing"
               :modalWindowProps ="modalWindowProps"
               @exitModalWindow="isModalFieldsShowing=false"
+              @successNotificationRequest="sendSuccessNotification"
+              @warningNotificationRequest="sendWarningNotification"
               @callModalWindow="callOrderModalWindow"/>
+  </div>
   <footer>
-    <PrettyFooter/>
+    <PrettyFooter @callModalWindow="callOrderModalWindow"/>
   </footer>
 </template>
 
 <style scoped>
+.app-component-wrapper{
+  min-height: calc(100vh - 226px - 50px);
+}
+.notification-wrapper{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.modal-fields-notification.warning{
+  background: #EE182C;
+}
+.modal-fields-notification.success{
+  background: var(--yellow);
+}
 *{
   font-family: var(--font-family);
   color: var(--text-color);
+}
+@media (width >=768px){
+  .app-component-wrapper{
+    min-height: calc(100vh - 113px - 153px);
+  }
+}
+@media(width >= 1181px){
+  .app-component-wrapper{
+    min-height: calc(100vh - 132px - 153px);
+  }
 }
 
 
@@ -107,19 +173,25 @@ function callOrderModalWindow(arg: ModalWindowPropsType) {
     font-family: var(--font-family);
     font-weight: 400;
     font-size: 14px;
-    color: #747474
+    color: var(--gray);
   }
   #header-desktop:deep(.header-router-links) > a{
     text-decoration: none;
-    color: #747474;
+    color: var(--gray);
   }
 #header-desktop:deep(.header-router-links) > .active{
     color: black;
     font-weight: 700;
   }
+#header-desktop:deep(.header-router-links) > .active{
+  color: black;
+  font-weight: 700;
+}
+#header-desktop:deep(a){
+  color: var(--text-color);
+}
   /* ==================================================== */
 #header-desktop:deep(.button_btn){
-  width:241.4px;
   height:51px;
 }
 </style>

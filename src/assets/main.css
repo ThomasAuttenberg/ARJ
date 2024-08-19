@@ -8,11 +8,24 @@
     --font-family: "Roboto", sans-serif;
     --text-color: #3F4657;
     --vh: 1vh;
+    --yellow: #F8D122;
+    --orange: #FFAE00;
+    --blue: #3b85be;
+    --gray: #747474;
+    --lightgray: #E0E0E0;
+    --btn-color: var(--yellow);
+    --btn-hover-color: var(--orange);
+    --input-error-color: rgba(255, 174, 0, 0.2);;
 }
 html{
     background: #f8f8f8;
     scroll-behavior: smooth;
 }
+
 .body-no-scroll{
     overflow: hidden;
+}
+.decorated-link{
+    text-decoration: none;
+    color: var(--blue);
 }

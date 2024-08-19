@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
-import MainImage from '@/components/organisms/IntroductionImage.vue'
-import Button from '@/components/atoms/PrettyButton.vue'
+import PrettyButtonFlexible from '@/components/atoms/PrettyButtonFlexible.vue'
+const emits = defineEmits(['callModalWindow'])
 </script>
 
 <template>
@@ -15,7 +15,7 @@ import Button from '@/components/atoms/PrettyButton.vue'
         хранение и терминальную обработку грузов от двери Отправителя до двери Получателя
       </div>
       <div class="mainImageContent-button">
-        <Button :text="'Заказать грузоперевозку'"/>
+        <PrettyButtonFlexible :text="'Заказать грузоперевозку'" @click="emits('callModalWindow')"/>
       </div>
     </div>
   </div>

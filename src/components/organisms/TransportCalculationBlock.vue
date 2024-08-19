@@ -1,17 +1,66 @@
 <script setup lang="ts">
 
 import PrettyInput from '@/components/atoms/PrettyInput.vue'
-import PrettyButton from '@/components/atoms/PrettyButton.vue'
 import { mailValidation, phoneValidation } from '@/hooks/validators'
 import { ref } from 'vue'
+import PrettyButtonFlexible from '@/components/atoms/PrettyButtonFlexible.vue'
+import type { InputValuesKeys } from '@/hooks/types'
+import { createOrder } from '@/hooks/API'
+import type { AxiosError, AxiosResponse } from 'axios'
 
-const name = defineModel<string>('mew');
-const phone = defineModel<string>('phone');
-const email = defineModel<string>('email');
-const emits = defineEmits(['callModalWindow']);
+const emits = defineEmits(['callModalWindow','warningNotificationRequest','successNotificationRequest']);
+
+
+const inputsValues = ref<Record<string, InputValuesKeys>>({
+  e_mail: {
+    model: '',
+    required: true,
+  },
+  phone: {
+    model: '',
+    required: true,
+  },
+  name: {
+    model: '',
+    required: true,
+  },
+});
+
 function callModalWindow(){
-  emits('callModalWindow',{ name:name.value, phone:phone.value, email:email.value, });
+  emits('callModalWindow',{ name: inputsValues.value.name.model, phone:inputsValues.value.phone.model, email:inputsValues.value.e_mail.model, });
 }
+const buttonLoadingEffect=ref(false);
+const submit = ()=>{
+
+  const onVerifyEnd = (object:Record<string,any>)=>{
+    buttonLoadingEffect.value = true;
+    createOrder(object).then((res:AxiosResponse)=>{
+      emits('callModalWindow', {success:true});
+    }).catch((err : AxiosError)=>{
+      emits('warningNotificationRequest', 'Ошибка при отправке данных!');
+      console.error("Ошибка при загрузке файла: " + err.message);
+    }).finally(()=>{
+      buttonLoadingEffect.value=false;
+    });
+  }
+
+  let hasError = false;
+  const submitObject:Record<string, any> = {};
+  Object.entries(inputsValues.value).forEach(([key, value]) => {
+    if(value.error || (!value.model && value.required)){
+      hasError = true;
+      if(!value.error) value.error = true;
+      return;
+    }
+    if(value.model)
+      submitObject[key] = value.transform ? value.transform(value.model) : value.model;
+  });
+  if(hasError){
+    emits('successNotificationRequest', 'Корректно заполните все поля');
+  }else{
+    onVerifyEnd(submitObject);
+  }
+};
 
 
 </script>
@@ -29,24 +78,29 @@ function callModalWindow(){
   <div class = "transport-calculation-block-form-wrapper">
     <div class="transport-calculation-block-form">
       <div class = "transport-calculation-block-inputs">
-        <PrettyInput input-id="transport-calculation-name" v-model:input-val="name" class="transport-calculation-block-form-input" placeholder="Ваше имя"/>
-        <PrettyInput input-id="transport-calculation-phone" :validator="phoneValidation" v-model:input-val="phone" class="transport-calculation-block-form-input" placeholder="+7 (xxx) xxx xx xx"/>
-        <PrettyInput input-id="transport-calculation-email" :validator="mailValidation" v-model:input-val="email" class="transport-calculation-block-form-input" placeholder="Почта"/>
+        <PrettyInput input-id="transport-calculation-name" v-model:input-val="inputsValues.name.model" class="transport-calculation-block-form-input" placeholder="Ваше имя"/>
+        <PrettyInput input-id="transport-calculation-phone" :validator="phoneValidation" v-model:input-val="inputsValues.phone.model" class="transport-calculation-block-form-input" placeholder="+7 (xxx) xxx xx xx"/>
+        <PrettyInput input-id="transport-calculation-email" :validator="mailValidation" v-model:input-val="inputsValues.e_mail.model" class="transport-calculation-block-form-input" placeholder="Почта"/>
       </div>
       <div>
         <span style="margin-right: 5px">+</span>
         <a class="transport-calculations-details" @click="callModalWindow">Уточнить детали заявки</a>
       </div>
-      <PrettyButton text="Заказать грузоперевозку"/>
+      <PrettyButtonFlexible :is-loading="buttonLoadingEffect" text="Заказать грузоперевозку" @click="submit"/>
     </div>
     <div class = "policy-accepting-text">
-      Нажимая кнопку, Вы соглашаетесь с «Политикой по обработке персональных данных»
+      Нажимая кнопку, Вы соглашаетесь с
+      «<RouterLink class="policy-accepting-text-link" to="/policy">Политикой по обработке персональных данных</RouterLink>»
     </div>
   </div>
 </div>
 </template>
 
 <style scoped>
+.policy-accepting-text-link{
+  text-decoration: none;
+  color: var(--blue)
+}
 .transport-calculations-details{
   cursor: pointer;
   text-decoration: underline;
@@ -58,9 +112,7 @@ function callModalWindow(){
   width: 280px;
   margin: auto;
 }
-.transport-calculation-block-form-wrapper{
 
-}
 .transport-calculation-block-form{
   display: flex;
   flex-direction: column;
@@ -99,7 +151,6 @@ function callModalWindow(){
 }
 .transport-calculation-block{
   color: var(--text-color);
-  font-family: var(--font-family);
   background: white;
   padding: 50px 0;
   display: flex;

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 
-import { computed, onMounted, type PropType, ref, type VNodeRef, watch } from 'vue'
+import { computed, onActivated, onMounted, type PropType, ref, type VNodeRef, watch } from 'vue'
+import { useRoute } from 'vue-router'
 type Validator = (val: string|undefined) => boolean;
 const props = defineProps({
   inputId: {type: String},
@@ -16,6 +17,7 @@ const inputVal = defineModel<string>('inputVal');
 const isComplete  = ref(Boolean(inputVal.value?.length));
 const isError = defineModel<boolean>('inputError');
 const inptRef = ref<VNodeRef | null>(null);
+const route = useRoute();
 
 const validate = (value:string|undefined)=>{
   if(props.validator) {
@@ -29,6 +31,7 @@ watch(inputVal, (value)=>{
 onMounted(()=>{
   validate(inputVal.value);
 })
+
 
 function onRemovalBtnClick(){
   inputVal.value = '';
@@ -49,7 +52,7 @@ function setCursorToEnd(event: Event) {
 <template>
   <div class = "input-wrapper" :class="{focus:isFocus, error:isError, complete:isComplete}">
     <span v-if="isFocus || isComplete" class = "additionalPlaceholder">{{placeholder}}</span>
-    <input :id="inputId" :type ref = "inptRef" class="input" value='' v-model="inputVal" :placeholder="!isFocus ? placeholder : ''"
+    <input :id="inputId" :type ref = "inptRef" class="input" v-model="inputVal" :placeholder="!isFocus ? placeholder : ''"
            @focusin="isFocus = true; setCursorToEnd($event)"
            @focusout="isFocus = false;" />
 
@@ -88,7 +91,7 @@ function setCursorToEnd(event: Event) {
   background: #f5f5f5;
 }
 .input-wrapper.error > .input{
-  background-color: rgba(248, 150, 15, 0.1);
+  background-color: var(--input-error-color);
   outline: 1px solid rgb(248, 150, 15);
   border-radius: 10px;
 }

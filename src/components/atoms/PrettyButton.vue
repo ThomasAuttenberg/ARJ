@@ -1,6 +1,5 @@
 <script setup lang="ts">
 
-import type { PropType } from 'vue'
 
 defineProps({
   text: String,
@@ -18,7 +17,6 @@ defineProps({
   .button_btn_btn {
     height: 51px;
     transition: 0.2s;
-    font-family: var(--font-family);
     font-size: 15px;
     font-weight: 600;
     font-style: normal;
@@ -31,7 +29,7 @@ defineProps({
     box-shadow: 0 15px 20px -10px rgba(241,157,0,0.4);
   }
   .button_btn_btn:hover{
-    transition: 0.3s;
+    transition: background-color 0.3s;
     box-shadow: 0 15px 30px -10px rgba(241,157,0,0.6);
     background: #ffae00;
   }

@@ -1,19 +1,20 @@
 <script setup lang="ts">
 
 import CardWithIco from '@/components/molecules/CardWithIco.vue'
-import PhoneIco from '@/components/atoms/icons/PhoneIco.vue'
 import LinkWithIcon from '@/components/molecules/LinkWithIcon.vue'
-import GeoIco from '@/components/atoms/icons/GeoIco.vue'
-import Button from '@/components/atoms/PrettyButton.vue'
 import RuKazakhMap from '../atoms/icons/DirectionsAndTraffic/RuKazakhMap.vue'
 import FlyingBox from '@/components/atoms/icons/DirectionsAndTraffic/FlyingBox.vue'
 import BoxLamp from '@/components/atoms/icons/DirectionsAndTraffic/BoxLamp.vue'
 import type { IProvidedComponent } from '@/hooks/types'
+import PrettyButtonFlexible from '@/components/atoms/PrettyButtonFlexible.vue'
+import GeoIcoGrayLight from '../atoms/icons/GeoIcoGrayLight.vue'
+import type { Component } from 'vue'
+import GeoIcoWhite from '@/components/atoms/icons/GeoIcoWhite.vue'
 
-function getEnumerationComponent(text: string) : IProvidedComponent {
-  return {component: LinkWithIcon, props: {text: text, ico: GeoIco}}
+function getEnumerationComponent(text: string, ico?:Component) : IProvidedComponent {
+  return {component: LinkWithIcon, props: {text: text, ico: ico? ico : GeoIcoGrayLight}}
 }
-
+const emits = defineEmits(['callModalWindow']);
 </script>
 
 <template>
@@ -23,7 +24,7 @@ function getEnumerationComponent(text: string) : IProvidedComponent {
         Направления и тарифы
       </div>
       <div class = "directions-and-traffic-titles-subtitle">
-        Приоритетные направления грузоперевозок компании "АРД"
+        Приоритетные направления грузоперевозок компании «АРД»
       </div>
     </div>
     <div class="directions-and-traffic-cards-container">
@@ -32,33 +33,35 @@ function getEnumerationComponent(text: string) : IProvidedComponent {
         :subtitle="'Осуществляем скорую доставку сборных грузов до/в'"
         :ico="RuKazakhMap"
         :enumeration="[
-          getEnumerationComponent('мяу'),
-          getEnumerationComponent('мур'),
-          getEnumerationComponent('кусь')
+          getEnumerationComponent('Казахстан (Алматы)'),
+          getEnumerationComponent('Вся территория России'),
         ]"
       />
       <card-with-ico class="directions-and-traffic-card"
-                     :title="'Направление зоны охвата услуг - Казахстан и Россия'"
-                     :subtitle="'Осуществляем скорую доставку сборных грузов до/в'"
+                     :title="'Всегда в курсе событий «Рынка грузоперевозок»'"
+                     :subtitle="'Предоставляем эксклюзивные предложения своим Заказчикам по режиму доставки'"
                      :ico="FlyingBox"
                      :enumeration="[
-        getEnumerationComponent('мяу'),
-        getEnumerationComponent('мур'),
-        getEnumerationComponent('кусь')
+        getEnumerationComponent('Экспресс'),
+        getEnumerationComponent('Стандарт'),
+        getEnumerationComponent('Грузовой')
       ]"
       />
       <card-with-ico class="directions-and-traffic-card last-card"
-                     :title="'Направление зоны охвата услуг - Казахстан и Россия'"
-                     :subtitle="'Осуществляем скорую доставку сборных грузов до/в'"
+                     :title="'Персональная логистика для бизнеса'"
+                     :subtitle="'Эксклюзивное предложение\nСкорая доставка по направлениям:'"
                      :ico="BoxLamp"
                      :enumeration="[
-        getEnumerationComponent('мяу'),
+        getEnumerationComponent('Алматы - Новосибирск за 2 дня', GeoIcoWhite),
+        getEnumerationComponent('Алматы - Москва за 5 дней', GeoIcoWhite),
+        getEnumerationComponent('Алматы - Казань за 4 дня', GeoIcoWhite),
+        getEnumerationComponent('Алматы - Екатеринбург за 4 дня', GeoIcoWhite)
       ]"
       />
       <div class = "directions-and-traffic-card-btn-container">
-        <Button class="directions-and-traffic-card-btn" :text="'Оформить заявку'"/>
-        <Button class="directions-and-traffic-card-btn hidden"/>
-        <Button class="directions-and-traffic-card-btn hidden"/>
+        <PrettyButtonFlexible class="directions-and-traffic-card-btn" :text="'Оформить заявку'" @click="emits('callModalWindow', $event);"/>
+        <PrettyButtonFlexible class="directions-and-traffic-card-btn hidden"/>
+        <PrettyButtonFlexible class="directions-and-traffic-card-btn hidden"/>
       </div>
     </div>
   </div>
@@ -91,7 +94,6 @@ function getEnumerationComponent(text: string) : IProvidedComponent {
   gap:20px;
 }
 .directions-and-traffic-container {
-  font-family: var(--font-family);
   color: var(--text-color);
   background: white;
   display: flex;
@@ -126,7 +128,12 @@ function getEnumerationComponent(text: string) : IProvidedComponent {
 }
 @media (768px <= width < 1181px) {
   .directions-and-traffic-card.last-card:deep(.card-with-ico-enumeration-item){
-    justify-content: center;
+    justify-content: left;
+
+  }
+  .directions-and-traffic-card.last-card:deep(.card-with-ico-enumeration){
+    width: 310px;
+    align-self: center;
   }
   .directions-and-traffic-titles{
     text-align: center;

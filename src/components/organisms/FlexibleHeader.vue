@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { RouterLink } from 'vue-router'
-import TizaLogo from '@/components/atoms/TizaLogo.vue'
-import { type Component, computed, nextTick, type PropType, ref, type VNodeRef } from 'vue'
+import { type PropType, ref, type VNodeRef } from 'vue'
 import type {IProvidedComponent} from '@/hooks/types'
 
 interface IRoutesProp{
@@ -25,8 +24,8 @@ const menuRef = ref<VNodeRef | null>(null);
 const menuState = ref(false);
 const wrapper = ref<VNodeRef | null>(null);
 
-function menuStateChanger(val : Event){
-  menuState.value = (val.target as HTMLInputElement).checked;
+function menuStateChanger(){
+  menuState.value = (menuRef.value as HTMLInputElement).checked;
   if(menuState.value){
     document.body.classList.add('body-no-scroll');
   }else{
@@ -37,6 +36,10 @@ function menuStateChanger(val : Event){
 window.addEventListener('resize', ()=>{
   if(window.matchMedia("(min-width: 1181px)").matches){
     document.body.classList.remove('body-no-scroll');
+    if(menuState.value){
+      menuState.value = false;
+      (menuRef.value as HTMLInputElement).checked = false;
+    }
   }
 });
 
@@ -49,8 +52,8 @@ function onRouterLinkClick(val:number){
       if (top)
         window.scrollTo(0, top - (wrapper.value as HTMLElement).getBoundingClientRect().height);
       if(menuState.value){
-        menuState.value = false;
         (menuRef.value as HTMLInputElement).checked = false;
+        menuStateChanger();
       }
     }
   });

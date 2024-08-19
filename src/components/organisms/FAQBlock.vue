@@ -41,7 +41,6 @@ defineProps({
 .faq-block-container{
   display: flex;
   justify-content: center;
-  font-family: var(--font-family);
   color: var(--text-color);
 }
 .faq-block-title {

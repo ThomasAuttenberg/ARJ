@@ -3,14 +3,15 @@ import type { Component, PropType } from 'vue'
 
 const props = defineProps({
   ico: {type: Object as PropType<Component>, required: true},
-  text: {type: String, required: true}
+  text: {type: String, required: true},
+  link: {type: String},
 })
 </script>
 
 <template>
 <div class = "ico-with-link-label">
   <component :is=ico></component>
-  <p>{{ text }}</p>
+  <a :href="link">{{ text }}</a>
 </div>
 </template>
 
@@ -19,7 +20,8 @@ const props = defineProps({
     display: flex;
     gap: 5px;
   }
-  .ico-with-link-label > p{
+  .ico-with-link-label > a{
+    text-decoration: none;
     align-self: center;
   }
 </style>

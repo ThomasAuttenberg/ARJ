@@ -6,27 +6,25 @@ axiosInstance.interceptors.response.use(
   (err: AxiosError) => Promise.reject(err));
 
 // Служебный объект, сами запросы - ниже
-export function APIFetch(params : {method?:string, endpoint?:string, headers:Record<string,any>, body?:any}){
+export function APIFetch(params : {method?:string, endpoint?:string, headers?:Record<string,any>, body?:any}){
   const api_url : string = import.meta.env.VITE_API_URL;
   if(params.endpoint === undefined){
     params.endpoint = "";
   }else{
     if(api_url.slice(-1) === '/' && params.endpoint[0] === '/'){
       params.endpoint = params.endpoint.slice(1);
-      console.log("sliced!" + params.endpoint);
     }else{
       if(api_url.slice(-1) !== '/' && params.endpoint[0] !== '/'){
         params.endpoint = '/'+ params.endpoint;
-        console.log("non sliced!" + params.endpoint);
       }
     }
   }
-  if(params.method == null || params.method === ''){
+  if(!params.method){
     params.method = 'GET';
   }
 
   return axiosInstance({
-    headers: params.headers,
+    headers: Object(params.headers),
     method: params.method,
     url: api_url + params.endpoint,
     responseType: "json",
@@ -49,3 +47,17 @@ export function uploadFile(file: File){
     body: formData,
   })
 }
+export function createOrder(object: Record<string, any>){
+  //console.log(object)
+  return APIFetch({
+    method: "POST",
+    endpoint: "/create-order",
+    body: object,
+  })
+}
+export function getCoordinates(){
+  return APIFetch({
+    endpoint: "/get-coordinates",
+  })
+}
+

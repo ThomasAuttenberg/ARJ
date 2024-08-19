@@ -1,26 +1,32 @@
 <script setup lang="ts">
 
 import PrettyInput from '@/components/atoms/PrettyInput.vue'
-import PrettyButton from '@/components/atoms/PrettyButton.vue'
 import { onMounted, type PropType, ref, type VNodeRef } from 'vue'
 import { emptyValidation, floatValidation, mailValidation, numberValidation, phoneValidation } from '@/hooks/validators'
-import type { ModalWindowPropsType } from '@/hooks/types'
+import type { InputValuesKeys, ModalWindowPropsType } from '@/hooks/types'
 import PrettyFileOutput from '@/components/atoms/PrettyFileOutput.vue'
-import PrettyFileInpit from '@/components/atoms/PrettyFileInpit.vue'
-import { uploadFile } from '@/hooks/API'
+import PrettyFileInput from '@/components/atoms/PrettyFileInput.vue'
+import { createOrder, uploadFile } from '@/hooks/API'
+import type { AxiosError, AxiosResponse } from 'axios'
+import PrettyButtonFlexible from '@/components/atoms/PrettyButtonFlexible.vue'
+import CloseWIndowCross from '@/components/atoms/icons/CloseWIndowCross.vue'
 
 
-
+const fileSizeLimit = 16000000;
 const link = import.meta.env.VITE_API_URL + '/download/' + import.meta.env.VITE_TEMPLATE_FILENAME;
 const props = defineProps({
   modalWindowProps: {type: Object as PropType<ModalWindowPropsType>}
 });
-const emit = defineEmits(['escape', 'submit']);
+
+const emit = defineEmits(['escape', 'submit', 'successNotificationRequest', 'warningNotificationRequest']);
 const modalFieldsWindow = ref<VNodeRef | null>(null);
 const modalFileWindow = ref<VNodeRef | null>(null);
+const modalSuccessWindow = ref<VNodeRef | null>(null);
 
 function onClick(event : MouseEvent){
-  if((modalFieldsWindow.value as HTMLDivElement).contains(event.target) || (modalFileWindow.value as HTMLDivElement).contains(event.target) ) {
+  if((modalFieldsWindow.value as HTMLDivElement).contains(event.target as HTMLElement)
+    || (modalFileWindow.value as HTMLDivElement).contains(event.target as HTMLElement)
+    || (modalSuccessWindow.value as HTMLDivElement).contains(event.target as HTMLElement) ) {
     event.stopPropagation();
   }else{
     emit('escape');
@@ -28,15 +34,9 @@ function onClick(event : MouseEvent){
 }
 const elements = ref<VNodeRef | null>(null);
 onMounted(()=>{
-  (elements.value as HTMLElement).focus();
+  //(elements.value as HTMLElement).focus();
 })
 
-interface InputValuesKeys{
-  model:string|undefined,
-  required?:boolean,
-  error?:boolean,
-  transform?:Function,
-}
 const inputsValues = ref<Record<string, InputValuesKeys>>({
   e_mail: {
     model: props.modalWindowProps?.email,
@@ -58,7 +58,9 @@ const inputsValues = ref<Record<string, InputValuesKeys>>({
   city_from: {model:''},
 });
 
-const windowNextStep = ref(false);
+let finalOrderObject : Record<string,any> = {};
+const successStep = ref(Boolean(props.modalWindowProps?.success));
+const windowNextStep = ref(successStep.value);
 const submit = ()=>{
 
   let hasError = false;
@@ -73,51 +75,52 @@ const submit = ()=>{
       submitObject[key] = value.transform ? value.transform(value.model) : value.model;
   });
   if(hasError){
-    return;
+    emit('successNotificationRequest','Корректно заполните указанные поля');
   }else{
     windowNextStep.value = true;
+    finalOrderObject = submitObject;
   }
 };
 
+
 const fileValidator = (file : File)=>{
   const parts = file.name.split('.');
-  const extension : string = parts.length >= 1 ? parts.pop() : '';
-  console.log(extension);
-  return extension === 'doc' || extension === 'docx';
-}
-const warningActive = ref(false);
-const successActive = ref(false);
-const warningNotification = ref<VNodeRef | null>(null);
-const successNotification = ref<VNodeRef | null>(null);
-const notificationTextContent = ref('');
-
-const sendWarningNotification = (text:string)=>{
-  notificationTextContent.value = text;
-  warningActive.value = true;
-  setTimeout(()=>warningActive.value = false, 2000);
+  const extension : string = parts.length >= 1 ? parts.pop() as string : '';
+  //console.log(extension);
+  //console.log("size "+file.size);
+  return file.size <= fileSizeLimit && (extension === 'doc' || extension === 'docx');
 }
 
-const sendSuccessNotification = (text:string)=>{
-  notificationTextContent.value = text;
-  successActive.value = true;
-  setTimeout(()=>successActive.value = false, 2000);
-}
 
 const onValidationError = ()=>{
-  sendWarningNotification('Ошибка загрузки файла');
+  emit('warningNotificationRequest','Ошибка загрузки файла: поддерживаемые форматы .docx, .doc. Размер файла: до 15Mb', 5000);
 }
 let uploadedFile : File;
 const onFileUpload = (file : File)=>{
   uploadedFile = file;
-  sendSuccessNotification('Файл загружен');
+  //console.log(file);
+  //console.log(uploadedFile);
+  emit('successNotificationRequest','Файл загружен');
 }
 
+const buttonLoadingEffect = ref(false);
 const finalSubmit = () =>{
-  uploadFile(uploadedFile).then(()=>{
-    console.log('ок');
-  }).catch(err=>{
-    sendWarningNotification('Ошибка при отправке запроса');
-    console.log(err);
+  buttonLoadingEffect.value=true;
+  if(uploadedFile) {
+    uploadFile(uploadedFile).then((res: AxiosResponse) => {
+      finalOrderObject['file_path'] = res.data['file_path'] as string;
+    }).catch((err: AxiosError) => {
+      emit('warningNotificationRequest', 'Ошибка при отправке файла! Файл проигнорирован');
+      console.error("Ошибка при загрузке файла: " + err.message);
+    });
+  }
+  createOrder(finalOrderObject).then((res:AxiosResponse)=>{
+    successStep.value = true;
+  }).catch((err : AxiosError)=>{
+    emit('warningNotificationRequest', 'Ошибка при отправке заявки!');
+    console.error("Ошибка при отправке заказа: " + err.message);
+  }).finally(()=>{
+    buttonLoadingEffect.value=false;
   })
 }
 
@@ -125,9 +128,23 @@ const finalSubmit = () =>{
 
 <template>
   <div class = "modal-fields-wrapper" @mousedown="onClick">
-    <div class = "modal-fields-warning-notification" :class="{active:warningActive}">{{notificationTextContent}}</div>
-      <div class = "modal-fields-notification" :class="{active:successActive}">{{notificationTextContent}}</div>
-    <div ref="modalFileWindow" class="modal-file-window" :class="{'next-step':windowNextStep}">
+
+    <div ref="modalSuccessWindow" class="modal-success-window" :class="{'success-step': successStep}">
+      <CloseWIndowCross class="modal-window-close-cross" @click="emit('escape')"/>
+      <div class = "modal-fields-text-description">
+        <div class ="text-description-title">
+          Заявка успешно оформлена
+        </div>
+        <div class ="text-description-text">
+          В ближайшее время с вами свяжутся наши менеджеры
+        </div>
+      </div>
+      <RouterLink to="/" ><PrettyButtonFlexible style="width:100%" text="Вернуться на главную" @click="emit('escape');"/></RouterLink>
+    </div>
+
+
+    <div ref="modalFileWindow" class="modal-file-window" :class="{'next-step':windowNextStep,'success-step':successStep}">
+      <CloseWIndowCross class="modal-window-close-cross" @click="emit('escape')"/>
       <div class = "modal-fields-text-description">
         <div class ="text-description-title">
           Расчет стоимости перевозки
@@ -138,7 +155,7 @@ const finalSubmit = () =>{
       </div>
       <div class="modal-fields-elements">
         <PrettyFileOutput text="Опись образец" :link/>
-        <PrettyFileInpit
+        <PrettyFileInput
           text="Загрузить файл"
           additional-text="(не более 15Mb)"
           text-uploaded="Загрузить другой файл"
@@ -147,11 +164,11 @@ const finalSubmit = () =>{
           @fileUploaded="onFileUpload"
         />
       </div>
-      <PrettyButton class="modal-file-window-btn" text="Оформить заявку" @click="finalSubmit"/>
+      <PrettyButtonFlexible :is-loading="buttonLoadingEffect" class="modal-file-window-btn" text="Оформить заявку" @click="finalSubmit"/>
     </div>
 
-    <div ref="modalFieldsWindow" class="modal-fields-window" :class="{'next-step':windowNextStep}" @click.prevent.stop>
-
+    <div ref="modalFieldsWindow" class="modal-fields-window" :class="{'next-step':windowNextStep,'success-step':successStep}" @click.prevent.stop>
+      <CloseWIndowCross class="modal-window-close-cross" @click="emit('escape')"/>
        <div class = "modal-fields-text-description">
          <div class ="text-description-title">
            Расчет стоимости перевозки
@@ -204,7 +221,7 @@ const finalSubmit = () =>{
           :validator="mailValidation"
           v-model:input-error="inputsValues.e_mail.error"
           placeholder="Почта*"/>
-        <PrettyButton text="Далее" @click="submit"/>
+        <PrettyButtonFlexible text="Далее" @click="submit"/>
       </div>
 
     </div>
@@ -212,28 +229,16 @@ const finalSubmit = () =>{
 </template>
 
 <style scoped>
-.modal-fields-warning-notification, .modal-fields-notification{
-  position: fixed;
-  top: -100%;
-  text-align: center;
-  align-content: center;
-  background: #EE182C;
-  color: white;
-  padding: 20px;
-  border-radius: 10px;
-  transition: 0.5s;
-}
-.modal-fields-notification{
-  background: #F8D122;
-}
-.modal-fields-notification.active, .modal-fields-warning-notification.active{
-  top: 20px;
-  transition: 0.5s;
+.modal-window-close-cross{
+  position: absolute;
+  top: 10px;
+  right: 10px;
 }
 .modal-file-window-btn{
   width: 100%;
 }
-.modal-file-window{
+.modal-file-window, .modal-success-window{
+  position: relative;
   display: none;
   padding: 30px;
   border-radius: 20px;
@@ -244,9 +249,13 @@ const finalSubmit = () =>{
   flex-direction: column;
 
 }
-.modal-file-window.next-step{
+
+.modal-file-window.next-step, .modal-success-window.success-step{
   animation: appearing 1s ease-out;
   display: flex;
+}
+.modal-file-window.success-step{
+  display: none;
 }
 .modal-fields-elements{
   overflow: auto;
@@ -261,6 +270,21 @@ const finalSubmit = () =>{
 .modal-fields-elements:deep(.input-wrapper:not(.error):hover),
 .modal-fields-elements:deep(.input-wrapper.error > .input){
   outline: none;
+}
+.modal-fields-elements::-webkit-scrollbar{
+  width: 5px;
+  padding: 2px;
+}
+.modal-fields-elements::-webkit-scrollbar-thumb {
+  width: 5px;
+  background: rgba(0, 0, 0, 0.09);
+  border-radius: 100px;
+}
+.modal-fields-elements::-webkit-scrollbar-track{
+  width: 5px;
+  background: #f8f8f8;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  border-radius: 100px;
 }
 .modal-fields-elements-inline{
   display: flex;
@@ -315,6 +339,7 @@ const finalSubmit = () =>{
   }
 }
 .modal-fields-window{
+  position: relative;
   animation: appearing 0.4s ease-out;
   width: clamp(350px, 400px, 80vw);
   max-height: calc(90*var(--vh,vh));

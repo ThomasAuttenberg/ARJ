@@ -1,8 +1,10 @@
 <script setup lang="ts">
 
-import { onMounted, ref, type VNodeRef, watch } from 'vue'
-import { type LngLat, YMap, type YMapLocationRequest, YMapMarker } from 'ymaps3'
+import { onMounted, ref, type VNodeRef} from 'vue'
+import { type LngLat, YMap, type YMapLocationRequest} from 'ymaps3'
 import loadScript from '@/hooks/loadScript'
+import { getCoordinates } from '@/hooks/API'
+import type { AxiosError } from 'axios'
 
 
 const mapCenter : LngLat = [70.030206, 50.920340];
@@ -10,7 +12,8 @@ let map : YMap;
 const mapRef = ref<VNodeRef | null>(null);
 
 
-
+let agencies:Record<string,any>[];
+const isEverythingOk = ref<boolean>(true);
 async function initMap(mapCenter : LngLat, zoom: number) {
 
   await loadScript("https://api-maps.yandex.ru/v3/?apikey="+import.meta.env.VITE_MAPS_API_KEY+"&lang=ru_RU")
@@ -20,6 +23,13 @@ async function initMap(mapCenter : LngLat, zoom: number) {
     });
 
   await ymaps3.ready;
+  await getCoordinates().then((res)=>{
+    agencies = res.data;
+  }).catch((err:AxiosError) => {
+    console.error(err.message);
+    isEverythingOk.value = false;
+  });
+
   const LOCATION: YMapLocationRequest = {
     center: mapCenter,
     zoom: zoom,
@@ -27,20 +37,37 @@ async function initMap(mapCenter : LngLat, zoom: number) {
   const { YMap, YMapDefaultSchemeLayer } = ymaps3;
   map = new YMap(document.getElementById('map') as HTMLElement, { location: LOCATION });
   map.addChild(new YMapDefaultSchemeLayer({}));
-
-  const markerElement = document.createElement('div');
-  markerElement.className = 'map-agency-marker';
-
-  const marker = new ymaps3.YMapMarker({
-    coordinates: [37.623082, 55.75254]
-  },markerElement);
-
   map.addChild(new ymaps3.YMapDefaultFeaturesLayer({zIndex: 1800}));
-  map.addChild(marker);
+  for(let obj of agencies) {
+    const element = obj as { city_name: string, coords: LngLat };
+
+    // Создание маркера
+    const markerElement = document.createElement('div');
+    const markerInnerElement = document.createElement('div');
+    const markerToolTip = document.createElement('div');
+
+    markerInnerElement.className = 'map-agency-marker';
+    markerToolTip.className = 'map-agency-tooltip'
+    markerToolTip.textContent = element.city_name;
+
+    markerElement.className = 'map-agency-marker-container';
+    markerElement.appendChild(markerInnerElement);
+    markerElement.appendChild(markerToolTip);
+
+
+    const marker = new ymaps3.YMapMarker({
+      coordinates: element.coords.reverse() as LngLat,
+      onClick: () => {},
+    }, markerElement);
+    console.log(element.coords);
+    map.addChild(marker);
+  }
+
 }
 
 
 onMounted(() => {
+
   const width = window.innerWidth;
   let zoom = 4;
 
@@ -62,7 +89,7 @@ onMounted(() => {
 </template>
 
 <style scoped>
-:global(.map-agency-marker){
+:global(.map-agency-marker-container){
   position: absolute;
   z-index: 99;
   top: -50px;
@@ -71,13 +98,25 @@ onMounted(() => {
   height: 33px;
   background: url("@/assets/icons/geoPin.svg");
 }
+:global(.map-agency-marker-container > .map-agency-tooltip){
+  display: none;
+}
+:global(.map-agency-marker-container:hover > .map-agency-tooltip){
+  font: var(--font-family);
+  color: var(--blue);
+  font-weight: 900;
+  text-shadow: 8px 4px 8px rgba(59,133,190,1);
+  display: unset;
+  margin-left: 35px;
+  width: 100px;
+  z-index: 101;
+}
 
 #map{
   width: 100%;
   height: 400px;
 }
 .cities-wrapper {
-  font-family: var(--font-family);
   color: var(--text-color);
   padding-top: 50px;
   display: flex;

@@ -29,16 +29,23 @@ defineProps({
 </template>
 
 <style scoped>
+.card-with-ico-enumeration{
+  display: flex;
+  flex-direction: column;
+  gap:7px;
+}
 .card-with-ico-ico{
   align-self: center;
 }
 .card-with-ico-title{
+  white-space: pre-line;
   font-weight: 600;
   font-size: 20px;
   line-height: 130%;
   text-align: center;
 }
 .card-with-ico-subtitle{
+  white-space: pre-line;
   font-weight: 400;
   font-size: 15px;
   line-height: 140%;
