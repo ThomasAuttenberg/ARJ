@@ -59,7 +59,7 @@ async function initMap(mapCenter : LngLat, zoom: number) {
       coordinates: element.coords.reverse() as LngLat,
       onClick: () => {},
     }, markerElement);
-    console.log(element.coords);
+    //console.log(element.coords);
     map.addChild(marker);
   }
 
