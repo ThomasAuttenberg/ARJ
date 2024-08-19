@@ -93,7 +93,6 @@ const onLogoClick = ()=>{
 .pretty-footer-lower-block{
   display: flex;
   flex-direction: column;
-  align-items: center;
   gap: 30px;
 }
 .pretty-footer-links-one{
@@ -141,6 +140,7 @@ const onLogoClick = ()=>{
   .pretty-footer-lower-block{
     flex-direction: row;
     justify-content: space-between;
+    align-items: center;
   }
   .pretty-footer-links-one{
     flex-direction: row;

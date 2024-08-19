@@ -105,11 +105,10 @@ onMounted(() => {
   font: var(--font-family);
   color: var(--blue);
   font-weight: 900;
-  text-shadow: 8px 4px 8px rgba(59,133,190,1);
   display: unset;
   margin-left: 35px;
   width: 100px;
-  z-index: 101;
+  z-index: 99;
 }
 
 #map{
