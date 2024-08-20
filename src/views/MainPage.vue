@@ -7,6 +7,7 @@ import TransportCalculationBlock from '@/components/organisms/TransportCalculati
 import AgenciesCities from '@/components/organisms/AgenciesCities.vue'
 import { type PropType } from 'vue'
 import type { ModalWindowPropsType } from '@/hooks/types'
+import PartnershipBalk from '@/components/atoms/PartnershipBalk.vue'
 const props = defineProps({
   modalWindowShowing: {type: Boolean},
   modalWindowProps: {type: Object as PropType<ModalWindowPropsType>}
@@ -22,6 +23,7 @@ const fd = (index:number) => {emits('watchingElement',index)}
   <div>
     <IntroductionImage id="main" v-intersection="[fd,0]" @callModalWindow="emits('callModalWindow', $event);"/>
     <DirectionsAndTariffs id="directions" v-intersection="[fd,1]" @callModalWindow="emits('callModalWindow', $event);"/>
+    <PartnershipBalk/>
     <FAQBlock id="faq" v-intersection="[fd,2]"
       title="Часто задаваемые вопросы"
       :items = "[

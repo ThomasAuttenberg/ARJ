@@ -64,7 +64,7 @@ const onLogoClick = ()=>{
   display: flex;
   justify-content: center;
   align-items: center;
-  background: #5a5a5a;
+  background: var(--darkgray);
 }
 .pretty-footer-wrapper{
   width: clamp(0px,100%,1180px);
