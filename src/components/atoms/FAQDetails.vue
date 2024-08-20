@@ -52,4 +52,7 @@ watch(isOpened,()=>{console.log(isOpened.value)})
   min-height: 20px;
   list-style: none;
 }
+.faq-details-summary::-webkit-details-marker {
+  display: none;
+}
 </style>
