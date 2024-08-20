@@ -8,7 +8,7 @@ export default function loadScript(src : string) {
       return;
     }
 
-    const script = document.createElement('script');;
+    const script = document.createElement('script');
     script.src = src;
     script.onload = resolve;
     script.onerror = reject;
