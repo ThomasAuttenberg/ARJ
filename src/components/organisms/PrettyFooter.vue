@@ -28,7 +28,7 @@ const onLogoClick = ()=>{
             <a class="pretty-footer-link-default" href="tel:+7 (777) 722 17 04">+7 (777) 722 17 04</a>
           </div>
           <div class = "pretty-footer-phone-caption">
-            По россии и казахстану
+            По России и Казахстану
           </div>
         </div>
         <div class = "pretty-footer-button">

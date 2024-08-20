@@ -104,17 +104,8 @@ const onFileUpload = (file : File)=>{
 }
 
 const buttonLoadingEffect = ref(false);
-const finalSubmit = () =>{
-  buttonLoadingEffect.value=true;
-  if(uploadedFile) {
-    uploadFile(uploadedFile).then((res: AxiosResponse) => {
-      finalOrderObject['file_path'] = res.data['file_path'] as string;
-    }).catch((err: AxiosError) => {
-      emit('warningNotificationRequest', 'Ошибка при отправке файла! Файл проигнорирован');
-      console.error("Ошибка при загрузке файла: " + err.message);
-    });
-  }
-  createOrder(finalOrderObject).then((res:AxiosResponse)=>{
+const _createOrder = (orderObject:Record<string,any>) =>{
+  createOrder(orderObject).then((res:AxiosResponse)=>{
     successStep.value = true;
   }).catch((err : AxiosError)=>{
     emit('warningNotificationRequest', 'Ошибка при отправке заявки!');
@@ -122,6 +113,20 @@ const finalSubmit = () =>{
   }).finally(()=>{
     buttonLoadingEffect.value=false;
   })
+}
+const finalSubmit = () =>{
+  buttonLoadingEffect.value=true;
+  if(uploadedFile) {
+    uploadFile(uploadedFile).then((res: AxiosResponse) => {
+      finalOrderObject['file_path'] = res.data['file_path'] as string;
+      _createOrder(finalOrderObject);
+    }).catch((err: AxiosError) => {
+      emit('warningNotificationRequest', 'Ошибка при отправке файла! Файл проигнорирован');
+      console.error("Ошибка при загрузке файла: " + err.message);
+    });
+  }else{
+    _createOrder(finalOrderObject);
+  }
 }
 
 </script>
