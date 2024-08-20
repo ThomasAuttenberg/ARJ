@@ -74,6 +74,7 @@ import PrettyButtonFlexible from '@/components/atoms/PrettyButtonFlexible.vue'
   }
   .p-balk-title{
     font-size: 24px;
+    height: 100%;
     padding-top: 10px;
   }
   .p-balk-right-block{
