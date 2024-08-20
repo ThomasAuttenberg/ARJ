@@ -1,14 +1,14 @@
 <script setup lang="ts">
 
 import { onMounted, ref, type VNodeRef} from 'vue'
-import { type LngLat, YMap, type YMapLocationRequest} from 'ymaps3'
+import { type LngLat, type YMapLocationRequest} from 'ymaps3'
 import loadScript from '@/hooks/loadScript'
 import { getCoordinates } from '@/hooks/API'
 import type { AxiosError } from 'axios'
 
 
 const mapCenter : LngLat = [70.030206, 50.920340];
-let map : YMap;
+let map;
 const mapRef = ref<VNodeRef | null>(null);
 
 

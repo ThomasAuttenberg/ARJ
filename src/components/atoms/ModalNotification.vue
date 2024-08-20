@@ -3,7 +3,7 @@ import { ref } from 'vue'
 
 const notificationTextContent = ref<string>('');
 const activeClass = ref(false);
-let timeout : NodeJS.Timeout | null = null;
+let timeout : number | null = null;
 const sendNotification = (text:string, delay?:number)=>{
   const delay_ = delay || 2000;
   notificationTextContent.value = text;
