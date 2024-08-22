@@ -84,7 +84,7 @@ const emits = defineEmits(['callModalWindow']);
 .directions-and-traffic-titles-subtitle{
   font-size: 15px;
   line-height: 140%;
-  width: 350px;
+  max-width: 350px;
 }
 .hidden{
   visibility: hidden;
@@ -126,6 +126,9 @@ const emits = defineEmits(['callModalWindow']);
   background: linear-gradient(90deg, #1e5b8a 0%, #326f9e 100%);
   color: white;
   border: none;
+}
+.directions-and-traffic-titles{
+  padding: 0 20px;
 }
 @media (768px <= width < 1181px) {
   .directions-and-traffic-titles-subtitle{

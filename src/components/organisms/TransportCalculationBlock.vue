@@ -130,7 +130,7 @@ const submit = ()=>{
 }
 .transport-calculation-block-subtitle{
   font-size: 15px;
-  width: 330px;
+  max-width: 330px;
 }
 .transport-calculation-block-inputs{
   padding: 0 20px;
