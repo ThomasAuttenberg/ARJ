@@ -127,9 +127,7 @@ const emits = defineEmits(['callModalWindow']);
   color: white;
   border: none;
 }
-.directions-and-traffic-titles{
-  padding: 0 20px;
-}
+
 @media (768px <= width < 1181px) {
   .directions-and-traffic-titles-subtitle{
     align-self: center;
