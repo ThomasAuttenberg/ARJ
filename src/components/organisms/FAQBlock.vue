@@ -50,6 +50,7 @@ defineProps({
 .faq-block-title {
   font-weight: 700;
   font-size: 32px;
+  padding: 0 20px;
   text-transform: uppercase;
 }
 .faq-block-content {
