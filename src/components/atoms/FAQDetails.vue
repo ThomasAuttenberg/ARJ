@@ -10,7 +10,7 @@ defineProps({
 });
 
 const isOpened = ref<boolean | undefined>(undefined);
-watch(isOpened,()=>{console.log(isOpened.value)})
+
 </script>
 
 <template>

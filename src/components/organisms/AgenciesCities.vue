@@ -76,11 +76,11 @@ async function initMap(mapCenter : LngLat) {
   }
 // Start observing the target node for configured mutations
   const marker = (feature: Feature) => {
-    const contentPin = document.createElement('div');
-    contentPin.innerHTML = '<img src="/src/assets/icons/geoPin.svg" />';
+    //const contentPin = document.createElement('div');
+    //contentPin.innerHTML = '<img src="/src/assets/icons/geoPin.svg" />';
     const markerContainer = document.createElement('div');
     markerContainer.className = 'map-agency-marker-container';
-    markerContainer.appendChild(contentPin);
+    //markerContainer.appendChild(contentPin);
 
     markerContainer.addEventListener('mouseover', ()=>{
       showToolTip(feature);
