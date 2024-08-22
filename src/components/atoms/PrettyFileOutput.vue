@@ -24,6 +24,7 @@ defineProps({
 
 <style scoped>
 .file-output-wrapper{
+  border-radius: 10px;
   padding: 10px;
   display: flex;
   flex-direction: row;

@@ -42,6 +42,10 @@ defineProps({
   display: flex;
   justify-content: center;
   color: var(--text-color);
+  font-size:15px;
+}
+.faq-block-container:deep(.faq-details-summary){
+  font-size:15px;
 }
 .faq-block-title {
   font-weight: 700;

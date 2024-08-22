@@ -87,10 +87,10 @@ function onModalFieldsWindowSubmit(val:Record<string, any>){
       ]"
       :active-route-id = "activeRouteId"
       :left-side-components="[
-        {component: LinkWithIcon, props: {ico: GeoIco, text: 'г. Алматы, ст. Алматы-2',}}
+        {component: LinkWithIcon, props: {ico: GeoIco, text: 'ул. Аргымак, 1 (бывш. Промышленная,1)',}}
       ]"
       :right-side-components="[
-        {component: LinkWithIcon, props: {ico: PhoneIco, text: '+7 (777) 722 17 04', link:'tel:+7 (777) 722 17 04'}},
+        {component: LinkWithIcon, props: {ico: PhoneIco, text: '+7 7777 155 100', link:'tel:+7 7777 155 100'}},
         {component: LinkWithIcon, props: {ico: MailIco, text: 'sale@avtorailjet.kz',link:'mailto:sale@avtorailjet.kz'}},
       ]"
       :logo = "{component: TizaLogo}"
@@ -180,15 +180,11 @@ function onModalFieldsWindowSubmit(val:Record<string, any>){
     color: var(--gray);
   }
 #header-desktop:deep(.header-router-links) > .active{
-    color: black;
+    color: #3F4657;
     font-weight: 700;
   }
-#header-desktop:deep(.header-router-links) > .active{
-  color: black;
-  font-weight: 700;
-}
 #header-desktop:deep(a){
-  color: var(--text-color);
+  color: var(--gray);
 }
   /* ==================================================== */
 #header-desktop:deep(.button_btn){

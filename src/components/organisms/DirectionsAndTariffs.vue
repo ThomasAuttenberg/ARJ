@@ -24,7 +24,7 @@ const emits = defineEmits(['callModalWindow']);
         Направления и тарифы
       </div>
       <div class = "directions-and-traffic-titles-subtitle">
-        Приоритетные направления грузоперевозок компании «АРД»
+        Приоритетные направления грузоперевозок компании «AvtoRail Jet»
       </div>
     </div>
     <div class="directions-and-traffic-cards-container">
@@ -84,6 +84,7 @@ const emits = defineEmits(['callModalWindow']);
 .directions-and-traffic-titles-subtitle{
   font-size: 15px;
   line-height: 140%;
+  width: 350px;
 }
 .hidden{
   visibility: hidden;
@@ -127,6 +128,9 @@ const emits = defineEmits(['callModalWindow']);
   border: none;
 }
 @media (768px <= width < 1181px) {
+  .directions-and-traffic-titles-subtitle{
+    align-self: center;
+  }
   .directions-and-traffic-card.last-card:deep(.card-with-ico-enumeration-item){
     justify-content: left;
 
@@ -149,6 +153,9 @@ const emits = defineEmits(['callModalWindow']);
   }
 }
 @media (width < 768px) {
+  .directions-and-traffic-titles-subtitle{
+    align-self: center;
+  }
   .hidden{
     display: none;
   }

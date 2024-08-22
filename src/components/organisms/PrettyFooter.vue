@@ -25,7 +25,7 @@ const onLogoClick = ()=>{
       <div class="pretty-footer-upper-content-block">
         <div class = "pretty-footer-phone">
           <div class = "pretty-footer-phone-phone">
-            <a class="pretty-footer-link-default" href="tel:+7 (777) 722 17 04">+7 (777) 722 17 04</a>
+            <a class="pretty-footer-link-default" href="tel:+7 7777 155 100">+7 7777 155 100</a>
           </div>
           <div class = "pretty-footer-phone-caption">
             По России и Казахстану
@@ -41,13 +41,13 @@ const onLogoClick = ()=>{
     </div>
     <div class = "pretty-footer-lower-block">
       <div class = "pretty-footer-links-one">
-        <LinkWithIcon class="pretty-footer-link-default" text="г. Алматы, ст. Алматы-2" :ico="GeoIcoGrayLight"/>
-        <LinkWithIcon class="pretty-footer-link-default" text="sale@avtorailjet.kz" :ico="MailIcoWhite" link="mailto:sale@avtorailjet.kz"/>
+        <LinkWithIcon class="pretty-footer-link-default" text="ул. Аргымак, 1 (бывш. Промышленная,1)" :ico="GeoIcoGrayLight"/>
+        <LinkWithIcon class="pretty-footer-link-default" style="text-decoration: underline" text="sale@avtorailjet.kz" :ico="MailIcoWhite" link="mailto:sale@avtorailjet.kz"/>
       </div>
       <div class = "pretty-footer-links-two">
         <RouterLink to="/policy" style="color: var(--lightgray); font-size: 12px" class="pretty-footer-link-underlined">Политика</RouterLink>
         <RouterLink to="/offer" style="color: var(--lightgray); font-size: 12px">Оферта</RouterLink>
-        <p style="color: var(--lightgray); font-size: 12px">©ТОО « AvtoRail Jet (АвтоРейл Джет)»</p>
+        <p style="color: var(--lightgray); font-size: 12px">©ТОО « AvtoRail Jet (АвтоРейл Джет)», 2024</p>
       </div>
     </div>
   </div>
@@ -107,6 +107,7 @@ const onLogoClick = ()=>{
   display: flex;
   flex-direction: row;
   gap: 20px;
+  flex-wrap: wrap;
 }
 .pretty-footer-upper-block{
   display: flex;
@@ -143,11 +144,17 @@ const onLogoClick = ()=>{
     align-items: center;
   }
   .pretty-footer-links-one{
+    padding-right: 20px;
     flex-direction: row;
     gap: 15px;
+    text-wrap: nowrap;
   }
   .pretty-footer-links-two{
+    padding-top:5px;
     gap: 15px;
+    justify-content: end;
+    flex-wrap: wrap;
+    text-align: right;
   }
   .pretty-footer-button{
     display: block;

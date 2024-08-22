@@ -62,6 +62,7 @@ function onFileChange(){
   align-content: center;
   justify-content: center;
   background: #e8eff5;
+  border-radius: 10px;
   gap: 5px;
 }
 </style>

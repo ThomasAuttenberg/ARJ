@@ -106,6 +106,7 @@ const submit = ()=>{
   text-decoration: underline;
 }
 .policy-accepting-text{
+  color: #909090;
   padding-top: 10px;
   font-size: 12px;
   text-align: center;
@@ -139,6 +140,9 @@ const submit = ()=>{
   justify-content: center;
   width: 100%;
 }
+.transport-calculations-details{
+  font-size: 15px;
+}
 .transport-calculation-block-inputs:deep(.input-wrapper.error > .input){
   outline: none;
 }
@@ -155,7 +159,7 @@ const submit = ()=>{
   padding: 50px 0;
   display: flex;
   flex-direction: column;
-  gap: 30px;
+  gap: 40px;
   justify-content: center;
 }
 @media (768px <= width) {

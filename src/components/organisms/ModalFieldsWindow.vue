@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import PrettyInput from '@/components/atoms/PrettyInput.vue'
-import { onMounted, type PropType, ref, type VNodeRef } from 'vue'
+import { type PropType, ref, type VNodeRef } from 'vue'
 import { emptyValidation, floatValidation, mailValidation, numberValidation, phoneValidation } from '@/hooks/validators'
 import type { InputValuesKeys, ModalWindowPropsType } from '@/hooks/types'
 import PrettyFileOutput from '@/components/atoms/PrettyFileOutput.vue'
@@ -33,9 +33,6 @@ function onClick(event : MouseEvent){
   }
 }
 const elements = ref<VNodeRef | null>(null);
-onMounted(()=>{
-  //(elements.value as HTMLElement).focus();
-})
 
 const inputsValues = ref<Record<string, InputValuesKeys>>({
   e_mail: {
@@ -86,26 +83,31 @@ const submit = ()=>{
 const fileValidator = (file : File)=>{
   const parts = file.name.split('.');
   const extension : string = parts.length >= 1 ? parts.pop() as string : '';
-  //console.log(extension);
-  //console.log("size "+file.size);
   return file.size <= fileSizeLimit && (extension === 'doc' || extension === 'docx');
 }
-
 
 const onValidationError = ()=>{
   emit('warningNotificationRequest','Ошибка загрузки файла: поддерживаемые форматы .docx, .doc. Размер файла: до 15Mb', 5000);
 }
+
 let uploadedFile : File;
 const onFileUpload = (file : File)=>{
   uploadedFile = file;
-  //console.log(file);
-  //console.log(uploadedFile);
   emit('successNotificationRequest','Файл загружен');
 }
 
 const buttonLoadingEffect = ref(false);
-const _createOrder = (orderObject:Record<string,any>) =>{
-  createOrder(orderObject).then((res:AxiosResponse)=>{
+const finalSubmit = async () =>{
+  buttonLoadingEffect.value=true;
+  if(uploadedFile) {
+    await uploadFile(uploadedFile).then((res: AxiosResponse) => {
+      finalOrderObject['file_path'] = res.data['file_path'] as string;
+    }).catch((err: AxiosError) => {
+      emit('warningNotificationRequest', 'Ошибка при отправке файла! Файл проигнорирован');
+      console.error("Ошибка при загрузке файла: " + err.message);
+    });
+  }
+  createOrder(finalOrderObject).then((res:AxiosResponse)=>{
     successStep.value = true;
   }).catch((err : AxiosError)=>{
     emit('warningNotificationRequest', 'Ошибка при отправке заявки!');
@@ -113,20 +115,6 @@ const _createOrder = (orderObject:Record<string,any>) =>{
   }).finally(()=>{
     buttonLoadingEffect.value=false;
   })
-}
-const finalSubmit = () =>{
-  buttonLoadingEffect.value=true;
-  if(uploadedFile) {
-    uploadFile(uploadedFile).then((res: AxiosResponse) => {
-      finalOrderObject['file_path'] = res.data['file_path'] as string;
-      _createOrder(finalOrderObject);
-    }).catch((err: AxiosError) => {
-      emit('warningNotificationRequest', 'Ошибка при отправке файла! Файл проигнорирован');
-      console.error("Ошибка при загрузке файла: " + err.message);
-    });
-  }else{
-    _createOrder(finalOrderObject);
-  }
 }
 
 </script>
