@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import { onMounted, ref, type VNodeRef} from 'vue'
-import { type LngLat, YMapFeature, type YMapLocationRequest } from 'ymaps3'
+import type {  LngLat,  YMapLocationRequest } from 'ymaps3'
 import loadScript from '@/hooks/loadScript'
 import { getCoordinates } from '@/hooks/API'
 import type { AxiosError } from 'axios'
