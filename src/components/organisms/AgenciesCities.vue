@@ -231,6 +231,7 @@ onMounted(() => {
   justify-content: center;
 }
 .cities-title{
+  padding: 0 20px;
   width: 100%;
   max-width: 1180px;
   font-weight: 700;
