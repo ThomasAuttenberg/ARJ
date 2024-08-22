@@ -13,13 +13,17 @@ import ModalFieldsWindow from '@/components/organisms/ModalFieldsWindow.vue'
 import type { ModalWindowPropsType } from '@/hooks/types'
 import PrettyButtonFlexible from '@/components/atoms/PrettyButtonFlexible.vue'
 import ModalNotification from '@/components/atoms/ModalNotification.vue'
+import scrollToCalculations from '@/hooks/ScrollToCalculations'
 
 const activeRouteId = ref(0);
 const isModalFieldsShowing = ref(false);
 const route = useRoute();
+const headerRef = ref<VNodeRef | null>(null);
 
-
-function onHeaderButtonClicked(){isModalFieldsShowing.value=true;}
+function onHeaderButtonClicked(){
+  (headerRef.value as typeof HeaderDesktop).hideMenu();
+  scrollToCalculations();
+}
 function onWatchingElementChange(index:any){activeRouteId.value=index;}
 
 function scrollToTop(){
@@ -78,7 +82,7 @@ function onModalFieldsWindowSubmit(val:Record<string, any>){
 
 <template>
   <header>
-    <HeaderDesktop id="header-desktop"
+    <HeaderDesktop id="header-desktop" ref="headerRef"
       :routes="[
         {title: 'Главная', route:'/', anchor:'main'},
         {title: 'Направления и тарифы', route:'/', anchor: 'directions'},

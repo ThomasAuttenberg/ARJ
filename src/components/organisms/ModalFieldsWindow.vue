@@ -2,7 +2,14 @@
 
 import PrettyInput from '@/components/atoms/PrettyInput.vue'
 import { type PropType, ref, type VNodeRef } from 'vue'
-import { emptyValidation, floatValidation, mailValidation, numberValidation, phoneValidation } from '@/hooks/validators'
+import {
+  cityValidation,
+  emptyValidation,
+  floatValidation,
+  mailValidation,
+  numberValidation,
+  phoneValidation, placesValidation, TNCodeValudation, volumeValidation, weightValidation
+} from '@/hooks/validators'
 import type { InputValuesKeys, ModalWindowPropsType } from '@/hooks/types'
 import PrettyFileOutput from '@/components/atoms/PrettyFileOutput.vue'
 import PrettyFileInput from '@/components/atoms/PrettyFileInput.vue'
@@ -117,6 +124,7 @@ const finalSubmit = async () =>{
   })
 }
 
+
 </script>
 
 <template>
@@ -171,47 +179,54 @@ const finalSubmit = async () =>{
          </div>
        </div>
 
-      <div ref="elements" class = "modal-fields-elements" @submit.prevent="console.log('meow')">
+      <div ref="elements" class = "modal-fields-elements" @submit.prevent>
         <PrettyInput
           v-model:input-val="inputsValues.city_from.model"
+          :validator="{validator: cityValidation, errorText:'Название города должно быть введено на кириллице'}"
+          v-model:input-error="inputsValues.city_from.error"
           placeholder="Город отправления"/>
         <PrettyInput
           v-model:input-val="inputsValues.city_to.model"
-          placeholder="Город получения"/>
+          placeholder="Город получения"
+          :validator="{validator: cityValidation, errorText:'Название города должно быть введено на кириллице'}"
+          v-model:input-error="inputsValues.city_to.error"/>
         <div class ="modal-fields-elements-inline">
           <PrettyInput
             v-model:input-val="inputsValues.weight.model"
-            :validator="floatValidation"
+            :validator="{validator: weightValidation, errorText:'Целое или дробное число (не более 2 цифр после точки)'}"
             v-model:input-error="inputsValues.weight.error"
             placeholder="Вес, кг"/>
           <PrettyInput
             v-model:input-val="inputsValues.volume.model"
-            :validator="floatValidation"
+            :validator="{validator:volumeValidation,errorText:'Целое или дробное число (не более 3 цифр после точки)'}"
             v-model:input-error="inputsValues.volume.error"
             placeholder="Объем, м3"/>
         </div>
         <PrettyInput
           v-model:input-val="inputsValues.place.model"
-          :validator="numberValidation"
+          :validator="{validator:placesValidation,errorText:'Число, менее 1млн'}"
           v-model:input-error="inputsValues.place.error"
           placeholder="Количество мест, шт"/>
         <PrettyInput
           v-model:input-val="inputsValues.cn_fea_code.model"
+          :validator="{validator:TNCodeValudation, errorText:'Десять цифр'}"
+          v-model:input-error="inputsValues.cn_fea_code.error"
           placeholder="Код ТН ВЭД"/>
         <PrettyInput
           v-model:input-val="inputsValues.name.model"
           v-model:input-error="inputsValues.name.error"
-          v-model:validator="emptyValidation"
+          :validator="{validator:emptyValidation}"
           placeholder="Ваше имя*"/>
 
         <PrettyInput
           v-model:input-val="inputsValues.phone.model"
-          :validator="phoneValidation"
+          mask="+{7}(000)000-00-00"
+          :validator="{validator:phoneValidation}"
           v-model:input-error="inputsValues.phone.error"
-          placeholder="Телефон*"/>
+          placeholder="Телефон*" />
         <PrettyInput
           v-model:input-val="inputsValues.e_mail.model"
-          :validator="mailValidation"
+          :validator="{validator:mailValidation, errorText:'Адрес почтового ящика введен некорректно'}"
           v-model:input-error="inputsValues.e_mail.error"
           placeholder="Почта*"/>
         <PrettyButtonFlexible text="Далее" @click="submit"/>
@@ -259,11 +274,7 @@ const finalSubmit = async () =>{
 .modal-fields-elements:deep(.input){
   min-width: unset;
 }
-.modal-fields-elements:deep(.input):focus,
-.modal-fields-elements:deep(.input-wrapper:not(.error):hover),
-.modal-fields-elements:deep(.input-wrapper.error > .input){
-  outline: none;
-}
+
 .modal-fields-elements::-webkit-scrollbar{
   width: 5px;
   padding: 2px;

@@ -1,7 +1,8 @@
 <script setup lang="ts">
 
 import PrettyButtonFlexible from '@/components/atoms/PrettyButtonFlexible.vue'
-const emits = defineEmits(['callModalWindow'])
+import scrollToCalculations from '@/hooks/ScrollToCalculations'
+//const emits = defineEmits(['callTransitionToCalculations'])
 </script>
 
 <template>
@@ -15,7 +16,7 @@ const emits = defineEmits(['callModalWindow'])
         хранение и терминальную обработку грузов от двери Отправителя до двери Получателя
       </div>
       <div class="mainImageContent-button">
-        <PrettyButtonFlexible :text="'Заказать грузоперевозку'" @click="emits('callModalWindow')"/>
+        <PrettyButtonFlexible :text="'Заказать грузоперевозку'" @click="scrollToCalculations()"/>
       </div>
     </div>
   </div>
@@ -50,7 +51,7 @@ const emits = defineEmits(['callModalWindow'])
   margin: auto;
   width: 100%;
   height: 665px;
-  background: url('@/assets/images/eurasianMap.svg') center center no-repeat;
+  background: url('@/assets/images/eurasionMap.svg') center center no-repeat;
   background-size: 1180px 665px;
 }
 .mainImageContainer{
@@ -66,6 +67,7 @@ const emits = defineEmits(['callModalWindow'])
   .mainImageContent{
     width: 100%;
     height: 650px;
+    background: url('@/assets/images/eurasionMap-mobile.svg') center center no-repeat;
     background-size: 768px 650px;
   }
 }
@@ -80,6 +82,7 @@ const emits = defineEmits(['callModalWindow'])
   .mainImageContent{
     width: 100%;
     height: 657px;
+    background: url('@/assets/images/eurasionMap-mobile.svg') center center no-repeat;
     background-size: 768px 650px;
   }
 }

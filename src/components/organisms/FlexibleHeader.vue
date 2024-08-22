@@ -20,9 +20,20 @@ const props = defineProps({
   rightSideSeparatedComponent: {type: Object as PropType<IProvidedComponent>},
 });
 
+defineExpose({hideMenu});
+
+
+
 const menuRef = ref<VNodeRef | null>(null);
 const menuState = ref(false);
 const wrapper = ref<VNodeRef | null>(null);
+
+function hideMenu(){
+  if(menuState.value) {
+    (menuRef.value as HTMLInputElement).checked = false;
+    menuStateChanger();
+  }
+}
 
 function menuStateChanger(){
   menuState.value = (menuRef.value as HTMLInputElement).checked;
@@ -42,6 +53,14 @@ window.addEventListener('resize', ()=>{
     }
   }
 });
+
+function onLogoClick(){
+  emits('logoClick');
+  if(menuState.value) {
+    (menuRef.value as HTMLInputElement).checked = false;
+    menuStateChanger();
+  }
+}
 
 function onRouterLinkClick(val:number){
   setTimeout(()=> {
@@ -77,7 +96,7 @@ function onRouterLinkClick(val:number){
         <div class = "header-separator tablet"/>
     <div class="header-content-container">
       <div class="header-logo-block">
-        <component class="header-logo-logo" @click="emits('logoClick')" :is="logo?.component" v-on="logo?.eventListeners ? logo.eventListeners : {}"/>
+        <component class="header-logo-logo" @click="onLogoClick" :is="logo?.component" v-on="logo?.eventListeners ? logo.eventListeners : {}"/>
         <component class="desktop" v-for="(comp,index) in props.leftSideComponents" :key="index" :is="comp.component" v-bind="comp.props" v-on="comp.eventListeners ? comp.eventListeners : {}"/>
       </div>
       <div class="header-content-block">

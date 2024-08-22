@@ -6,6 +6,7 @@ import PrettyButtonFlexible from '@/components/atoms/PrettyButtonFlexible.vue'
 import GeoIcoWhite from '@/components/atoms/icons/GeoIcoWhite.vue'
 import MailIcoWhite from '@/components/atoms/icons/MailIcoWhite.vue'
 import GeoIcoGrayLight from '@/components/atoms/icons/GeoIcoGrayLight.vue'
+import scrollToCalculations from '@/hooks/ScrollToCalculations'
 
 const emits = defineEmits(['callModalWindow'])
 const onLogoClick = ()=>{
@@ -32,7 +33,7 @@ const onLogoClick = ()=>{
           </div>
         </div>
         <div class = "pretty-footer-button">
-          <PrettyButtonFlexible text="Заказать грузоперевозку" @click="emits('callModalWindow')"/>
+          <PrettyButtonFlexible text="Заказать грузоперевозку" @click="scrollToCalculations()"/>
         </div>
       </div>
     </div>

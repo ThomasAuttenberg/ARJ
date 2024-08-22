@@ -23,8 +23,33 @@ export function floatValidation(value: string | undefined) {
 export function emptyValidation(value: string | undefined) {return true;}
 export function numberValidation(value: string | undefined) {
   if (value) {
-    const numberRegExp = /^[0-9]+$/
-    return numberRegExp.test(value)
+    const numberRegExp = /^[0-9]+$/;
+    return numberRegExp.test(value);
   }
-  return true
+  return true;
+}
+export function TNCodeValudation(value: string | undefined) {
+  if(value)
+    return /^\d{10}$/.test(value);
+  return true;
+}
+export function weightValidation(value: string | undefined) {
+  if(value)
+    return /^\d+(\.\d{1,2})?$/.test(value);
+  return true;
+}
+export function volumeValidation(value: string | undefined) {
+  if(value)
+    return /^\d+(\.\d{1,3})?$/.test(value);
+  return true;
+}
+export function placesValidation(value: string | undefined) {
+  if(value)
+    return /^\d{1,6}$/.test(value);
+  return true;
+}
+export function cityValidation(value: string | undefined) {
+  if(value)
+    return /^[А-ЯЁа-яё\s-]+$/.test(value);
+  return true;
 }

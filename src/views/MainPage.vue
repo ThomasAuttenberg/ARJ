@@ -21,7 +21,7 @@ const fd = (index:number) => {emits('watchingElement',index)}
 
 <template>
   <div>
-    <IntroductionImage id="main" v-intersection="[fd,0]" @callModalWindow="emits('callModalWindow', $event);"/>
+    <IntroductionImage id="main" v-intersection="[fd,0]"/>
     <DirectionsAndTariffs id="directions" v-intersection="[fd,1]" @callModalWindow="emits('callModalWindow', $event);"/>
     <PartnershipBalk/>
     <FAQBlock id="faq" v-intersection="[fd,2]"
@@ -34,7 +34,7 @@ const fd = (index:number) => {emits('watchingElement',index)}
 '</br>Для юридических лиц - CMR; Invoice; ЭСФ; копия договора на поставку; разрешение на вывоз (в случае ограничений)'},
       ]"
     />
-    <TransportCalculationBlock
+    <TransportCalculationBlock id="calculation-block"
       @callModalWindow="emits('callModalWindow', $event);"
       @successNotificationRequest="emits('successNotificationRequest',$event)"
       @warningNotificationRequest="emits('warningNotificationRequest',$event)"

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import PrettyInput from '@/components/atoms/PrettyInput.vue'
-import { mailValidation, phoneValidation } from '@/hooks/validators'
+import { emptyValidation, mailValidation, phoneValidation } from '@/hooks/validators'
 import { ref } from 'vue'
 import PrettyButtonFlexible from '@/components/atoms/PrettyButtonFlexible.vue'
 import type { InputValuesKeys } from '@/hooks/types'
@@ -78,9 +78,26 @@ const submit = ()=>{
   <div class = "transport-calculation-block-form-wrapper">
     <div class="transport-calculation-block-form">
       <div class = "transport-calculation-block-inputs">
-        <PrettyInput input-id="transport-calculation-name" v-model:input-val="inputsValues.name.model" class="transport-calculation-block-form-input" placeholder="Ваше имя"/>
-        <PrettyInput input-id="transport-calculation-phone" :validator="phoneValidation" v-model:input-val="inputsValues.phone.model" class="transport-calculation-block-form-input" placeholder="+7 (xxx) xxx xx xx"/>
-        <PrettyInput input-id="transport-calculation-email" :validator="mailValidation" v-model:input-val="inputsValues.e_mail.model" class="transport-calculation-block-form-input" placeholder="Почта"/>
+        <PrettyInput input-id="transport-calculation-name"
+                     v-model:input-val="inputsValues.name.model"
+                     :validator="{validator:emptyValidation}"
+                     v-model:input-error="inputsValues.name.error"
+                     class="transport-calculation-block-form-input"
+                     placeholder="Ваше имя"/>
+        <PrettyInput input-id="transport-calculation-phone"
+                     :validator="{validator:phoneValidation, errorText:'Номер телефона введен некорректно'}"
+                     v-model:input-val="inputsValues.phone.model"
+                     v-model:input-error="inputsValues.phone.error"
+                     class="transport-calculation-block-form-input"
+                     placeholder="+7 (xxx) xxx xx xx"
+                     mask="+{7}(000)000-00-00"
+                     title="Телефон" />
+        <PrettyInput input-id="transport-calculation-email"
+                     :validator="{validator: mailValidation, errorText:'Адрес почтового ящика введен некорректно'}"
+                     v-model:input-val="inputsValues.e_mail.model"
+                     v-model:input-error="inputsValues.e_mail.error"
+                     class="transport-calculation-block-form-input"
+                     placeholder="Почта"/>
       </div>
       <div>
         <span style="margin-right: 5px">+</span>
@@ -143,9 +160,7 @@ const submit = ()=>{
 .transport-calculations-details{
   font-size: 15px;
 }
-.transport-calculation-block-inputs:deep(.input-wrapper.error > .input){
-  outline: none;
-}
+
 .transport-calculation-block-text{
   display: flex;
   align-items: center;
