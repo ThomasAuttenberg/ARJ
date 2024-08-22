@@ -152,6 +152,7 @@ const submit = ()=>{
   flex-direction: column;
   text-align: center;
   gap:20px;
+  padding: 0 20px;
 }
 .transport-calculation-block{
   color: var(--text-color);
