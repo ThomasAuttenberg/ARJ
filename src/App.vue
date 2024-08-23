@@ -14,7 +14,6 @@ import type { ModalWindowPropsType } from '@/hooks/types'
 import PrettyButtonFlexible from '@/components/atoms/PrettyButtonFlexible.vue'
 import ModalNotification from '@/components/atoms/ModalNotification.vue'
 import scrollToCalculations from '@/hooks/ScrollToCalculations'
-import ButtonAndLogo from '@/components/molecules/OnceUseCombination/ButtonAndLogo.vue'
 import ByteTransitLogoDefault from '@/components/atoms/icons/ByteTransitLogoDefault.vue'
 
 const activeRouteId = ref(0);
