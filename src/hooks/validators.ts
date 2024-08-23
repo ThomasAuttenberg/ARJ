@@ -1,6 +1,6 @@
 export function phoneValidation(value: string | undefined) {
   if (value) {
-    const phoneRegExp = /^(\s*)?(\+)?([- _():=+]?\d[- _():=+]?){10,14}(\s*)?$/
+    const phoneRegExp = /^(\s*)?(\+)?([- _():=+]?\d[- _():=+]?){11}(\s*)?$/
     return phoneRegExp.test(value)
   }
   return true

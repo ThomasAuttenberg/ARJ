@@ -14,6 +14,8 @@ import type { ModalWindowPropsType } from '@/hooks/types'
 import PrettyButtonFlexible from '@/components/atoms/PrettyButtonFlexible.vue'
 import ModalNotification from '@/components/atoms/ModalNotification.vue'
 import scrollToCalculations from '@/hooks/ScrollToCalculations'
+import ButtonAndLogo from '@/components/molecules/OnceUseCombination/ButtonAndLogo.vue'
+import ByteTransitLogoDefault from '@/components/atoms/icons/ByteTransitLogoDefault.vue'
 
 const activeRouteId = ref(0);
 const isModalFieldsShowing = ref(false);
@@ -97,6 +99,7 @@ function onModalFieldsWindowSubmit(val:Record<string, any>){
         {component: LinkWithIcon, props: {ico: PhoneIco, text: '+7 7777 155 100', link:'tel:+7 7777 155 100'}},
         {component: LinkWithIcon, props: {ico: MailIco, text: 'sale@avtorailjet.kz',link:'mailto:sale@avtorailjet.kz'}},
       ]"
+      :partnerLogo="{component: ByteTransitLogoDefault, props:{link:'https://www.sibtrans.ru/route-kazakhstan/'}}"
       :logo = "{component: TizaLogo}"
       :right-side-separated-component="{component: PrettyButtonFlexible, props:{text: 'Заказать грузоперевозку'}, eventListeners: {click:onHeaderButtonClicked}}"
       @logo-click = "router.push('/'); scrollToTop();"
@@ -130,7 +133,7 @@ function onModalFieldsWindowSubmit(val:Record<string, any>){
 
 <style scoped>
 .app-component-wrapper{
-  min-height: calc(100vh - 226px - 50px);
+  min-height: calc(100vh - 301px - 50px);
 }
 .notification-wrapper{
   display: flex;
@@ -149,12 +152,12 @@ function onModalFieldsWindowSubmit(val:Record<string, any>){
 }
 @media (width >=768px){
   .app-component-wrapper{
-    min-height: calc(100vh - 113px - 153px);
+    min-height: calc(100vh - 113px - 201px);
   }
 }
 @media(width >= 1181px){
   .app-component-wrapper{
-    min-height: calc(100vh - 132px - 153px);
+    min-height: calc(100vh - 145px - 201px);
   }
 }
 

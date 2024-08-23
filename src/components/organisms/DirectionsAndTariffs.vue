@@ -39,13 +39,8 @@ const emits = defineEmits(['callModalWindow']);
       />
       <card-with-ico class="directions-and-traffic-card"
                      :title="'Всегда в курсе событий «Рынка грузоперевозок»'"
-                     :subtitle="'Предоставляем эксклюзивные предложения своим Заказчикам по режиму доставки'"
+                     :subtitle="'Предоставляем эксклюзивные предложения своим Заказчикам по режиму “скорой” доставки'"
                      :ico="FlyingBox"
-                     :enumeration="[
-        getEnumerationComponent('Экспресс'),
-        getEnumerationComponent('Стандарт'),
-        getEnumerationComponent('Грузовой')
-      ]"
       />
       <card-with-ico class="directions-and-traffic-card last-card"
                      :title="'Персональная логистика для бизнеса'"

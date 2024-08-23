@@ -18,6 +18,7 @@ const props = defineProps({
   rightSideComponents: {type: Array as PropType<IProvidedComponent[]>},
   logo: {type: Object as PropType<IProvidedComponent>},
   rightSideSeparatedComponent: {type: Object as PropType<IProvidedComponent>},
+  partnerLogo: {type: Object as PropType<IProvidedComponent>},
 });
 
 defineExpose({hideMenu});
@@ -95,19 +96,25 @@ function onRouterLinkClick(val:number){
       </div>
         <div class = "header-separator tablet"/>
     <div class="header-content-container">
-      <div class="header-logo-block">
+      <div class="header-logo-block not-desktop">
         <component class="header-logo-logo" @click="onLogoClick" :is="logo?.component" v-on="logo?.eventListeners ? logo.eventListeners : {}"/>
-        <component class="desktop" v-for="(comp,index) in props.leftSideComponents" :key="index" :is="comp.component" v-bind="comp.props" v-on="comp.eventListeners ? comp.eventListeners : {}"/>
       </div>
       <div class="header-content-block">
-        <div class = "header-links desktop">
-          <component v-for="(comp,index) in props.rightSideComponents" :key="index" :is="comp.component" v-bind="comp.props" v-on="comp.eventListeners ? comp.eventListeners : {}"/>
-        </div>
+          <component class="header-logo-logo desktop" @click="onLogoClick" :is="logo?.component" v-on="logo?.eventListeners ? logo.eventListeners : {}"/>
+          <component class="desktop" v-for="(comp,index) in props.leftSideComponents" :key="index" :is="comp.component" v-bind="comp.props" v-on="comp.eventListeners ? comp.eventListeners : {}"/>
+          <component class="desktop" v-for="(comp,index) in props.rightSideComponents" :key="index" :is="comp.component" v-bind="comp.props" v-on="comp.eventListeners ? comp.eventListeners : {}"/>
         <div v-if=rightSideSeparatedComponent class="header-order-button not-mobile">
           <component
             :is="rightSideSeparatedComponent.component"
             v-bind="rightSideSeparatedComponent.props"
             v-on="rightSideSeparatedComponent?.eventListeners ? rightSideSeparatedComponent.eventListeners : {}"/>
+        </div>
+        <div class="header-partner-logo desktop">
+          <component class="header-partner-logo-logo"
+                     :is="partnerLogo?.component"
+                     v-bind="partnerLogo?.props"
+                     v-on="partnerLogo?.eventListeners ? partnerLogo.eventListeners : {}"
+          />
         </div>
         <div class="not-desktop">
         <input ref="menuRef" type="checkbox" @change="menuStateChanger" id="burger-checkbox" class="burger-checkbox">
@@ -138,13 +145,31 @@ function onRouterLinkClick(val:number){
         <component v-for="(comp,index) in props.leftSideComponents" :key="index" :is="comp.component" v-bind="comp.props" v-on="comp.eventListeners ? comp.eventListeners : {}"/>
         <component v-for="(comp,index) in props.rightSideComponents" :key="index" :is="comp.component" v-bind="comp.props" v-on="comp.eventListeners ? comp.eventListeners : {}"/>
       </div>
+      <div class = "menu-partner-logo">
+        <component class="header-partner-logo-logo"
+                   :is="partnerLogo?.component"
+                   v-bind="partnerLogo?.props"
+                   v-on="partnerLogo?.eventListeners ? partnerLogo.eventListeners : {}"
+        />
+      </div>
     </div>
   </div>
   </div>
 </template>
 
 <style scoped>
-
+.header-partner-logo{
+  height: 64px;
+}
+.menu-partner-logo{
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding-bottom: 30px;
+}
+.header-partner-logo-logo{
+  width: 88px;
+}
 .header-menu-separated-component{
   padding-bottom: 40px;
 }
@@ -155,6 +180,7 @@ function onRouterLinkClick(val:number){
   display: flex;
   flex-direction: column;
   gap:20px;
+  min-height: 200px;
 }
 
 .header-menu-links{
@@ -184,6 +210,7 @@ function onRouterLinkClick(val:number){
   height: calc(100 * var(--vh, 1vh) - 100%);
   background: #FFFFFF;
   transition: right 0.2s;
+  overflow: auto;
 }
 .header-menu.active{
   right: 0;
@@ -197,6 +224,8 @@ function onRouterLinkClick(val:number){
 
 .header-logo-logo{
   cursor: pointer;
+  width: 130px;
+  height: 37px;
 }
 .header-router-links{
   height: 20px;
@@ -218,7 +247,7 @@ function onRouterLinkClick(val:number){
 .header-content-block{
   display: flex;
   align-items: center;
-  gap: 30px;
+  justify-content: space-between;
 }
 .header-logo-block{
   display: flex;
@@ -232,6 +261,7 @@ function onRouterLinkClick(val:number){
   align-content: center;
   width: 100%;
 }
+
 .header-header-desktop{
   display: flex;
   flex-direction: column;
@@ -242,6 +272,9 @@ function onRouterLinkClick(val:number){
 }
 
 @media (768px <= width < 1181px) {
+  .menu-partner-logo{
+    padding-bottom: 50px;
+  }
   .desktop{
     display: none;
   }
@@ -251,6 +284,7 @@ function onRouterLinkClick(val:number){
   }
   .header-content-block{
     gap: 20px;
+    width: unset;
   }
   .mobile{
     display: none;
@@ -273,7 +307,10 @@ function onRouterLinkClick(val:number){
     display: none;
   }
   .height-filler{
-    height: 132px;
+    height: 145px;
+  }
+  .header-content-block{
+    width: 100%;
   }
 }
 @media (width < 768px) {

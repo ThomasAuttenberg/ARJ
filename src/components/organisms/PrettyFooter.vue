@@ -7,6 +7,7 @@ import GeoIcoWhite from '@/components/atoms/icons/GeoIcoWhite.vue'
 import MailIcoWhite from '@/components/atoms/icons/MailIcoWhite.vue'
 import GeoIcoGrayLight from '@/components/atoms/icons/GeoIcoGrayLight.vue'
 import scrollToCalculations from '@/hooks/ScrollToCalculations'
+import ByteTransitLogo from '@/components/atoms/icons/ByteTransitLogo.vue'
 
 const emits = defineEmits(['callModalWindow'])
 const onLogoClick = ()=>{
@@ -41,14 +42,19 @@ const onLogoClick = ()=>{
     <div class = "divider"/>
     </div>
     <div class = "pretty-footer-lower-block">
-      <div class = "pretty-footer-links-one">
-        <LinkWithIcon class="pretty-footer-link-default" text="ул. Аргымак, 1 (бывш. Промышленная,1)" :ico="GeoIcoGrayLight"/>
-        <LinkWithIcon class="pretty-footer-link-default" style="text-decoration: underline" text="sale@avtorailjet.kz" :ico="MailIcoWhite" link="mailto:sale@avtorailjet.kz"/>
+      <div class="pretty-footer-links">
+        <div class = "pretty-footer-links-one">
+          <LinkWithIcon class="pretty-footer-link-default" text="ул. Аргымак, 1 (бывш. Промышленная,1)" :ico="GeoIcoGrayLight"/>
+          <LinkWithIcon class="pretty-footer-link-default" style="text-decoration: underline" text="sale@avtorailjet.kz" :ico="MailIcoWhite" link="mailto:sale@avtorailjet.kz"/>
+        </div>
+        <div class = "pretty-footer-links-two">
+          <RouterLink to="/policy" style="color: var(--lightgray); font-size: 12px" class="pretty-footer-link-underlined">Политика</RouterLink>
+          <RouterLink to="/offer" style="color: var(--lightgray); font-size: 12px">Оферта</RouterLink>
+          <p style="color: var(--lightgray); font-size: 12px">©ТОО « AvtoRail Jet (АвтоРейл Джет)», 2024</p>
+        </div>
       </div>
-      <div class = "pretty-footer-links-two">
-        <RouterLink to="/policy" style="color: var(--lightgray); font-size: 12px" class="pretty-footer-link-underlined">Политика</RouterLink>
-        <RouterLink to="/offer" style="color: var(--lightgray); font-size: 12px">Оферта</RouterLink>
-        <p style="color: var(--lightgray); font-size: 12px">©ТОО « AvtoRail Jet (АвтоРейл Джет)», 2024</p>
+      <div class="pretty-footer-logo-logo">
+        <ByteTransitLogo link="https://www.sibtrans.ru/route-kazakhstan/"/>
       </div>
     </div>
   </div>
@@ -56,7 +62,15 @@ const onLogoClick = ()=>{
 </template>
 
 <style scoped>
-
+.pretty-footer-links{
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: column;
+  gap: 10px;
+}
+.pretty-footer-logo-logo{
+  width: 88px;
+}
 .pretty-footer-link-default:deep(a), .pretty-footer-link-default{
   color: white;
   text-decoration: none;
@@ -102,13 +116,16 @@ const onLogoClick = ()=>{
   gap: 10px;
   font-size: 15px;
   line-height: 140%;
+  text-align: left;
 }
 .pretty-footer-links-two{
   font-size: 14px;
   display: flex;
   flex-direction: row;
-  gap: 20px;
+  gap: 30px;
+  row-gap: 20px;
   flex-wrap: wrap;
+  text-align: left;
 }
 .pretty-footer-upper-block{
   display: flex;
@@ -153,9 +170,8 @@ const onLogoClick = ()=>{
   .pretty-footer-links-two{
     padding-top:5px;
     gap: 15px;
-    justify-content: end;
+    justify-content: start;
     flex-wrap: wrap;
-    text-align: right;
   }
   .pretty-footer-button{
     display: block;

@@ -12,10 +12,10 @@ import PrettyButtonFlexible from '@/components/atoms/PrettyButtonFlexible.vue'
     </div>
     <div class="p-balk-right-block">
       <div class="p-balk-logo">
-        <ByteTransitLogo/>
+        <ByteTransitLogo class="p-balk-logo-logo"/>
       </div>
       <div class="p-balk-link-button">
-        <a href="https://www.sibtrans.ru/">
+        <a href="https://www.sibtrans.ru/route-kazakhstan/">
         <PrettyButtonFlexible class="p-balk-link-button-button" text="Перейти на сайт"/>
         </a>
       </div>
@@ -52,9 +52,13 @@ import PrettyButtonFlexible from '@/components/atoms/PrettyButtonFlexible.vue'
   text-transform: uppercase;
   color: white;
 }
-.p-balk-logo:deep(.byte_transit_logo){
+.p-balk-logo:deep{
   display: flex;
   justify-content: center;
+}
+.p-balk-logo-logo{
+  width: 120px;
+  height: 88px;
 }
 .p-balk-link-button-button{
   width: 100%;
