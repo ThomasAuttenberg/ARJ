@@ -6,15 +6,16 @@ import GeoIco from '@/components/atoms/icons/GeoIco.vue'
 import PhoneIco from '@/components/atoms/icons/PhoneIco.vue'
 import MailIco from '@/components/atoms/icons/MailIco.vue'
 import HeaderDesktop from '@/components/organisms/FlexibleHeader.vue'
-import { ref, type VNodeRef, watch } from 'vue'
+import { computed, ref, type VNodeRef, watch } from 'vue'
 import router from '@/router'
 import PrettyFooter from '@/components/organisms/PrettyFooter.vue'
 import ModalFieldsWindow from '@/components/organisms/ModalFieldsWindow.vue'
 import type { ModalWindowPropsType } from '@/hooks/types'
 import PrettyButtonFlexible from '@/components/atoms/PrettyButtonFlexible.vue'
 import ModalNotification from '@/components/atoms/ModalNotification.vue'
-import scrollToCalculations from '@/hooks/ScrollToCalculations'
+import scrollToCalculations from '@/hooks/UIActions/scrollToCalculations'
 import ByteTransitLogoDefault from '@/components/atoms/icons/ByteTransitLogoDefault.vue'
+import { useLangStore } from '@/stores/lang'
 
 const activeRouteId = ref(0);
 const isModalFieldsShowing = ref(false);
@@ -78,6 +79,15 @@ function onModalFieldsWindowSubmit(val:Record<string, any>){
   isModalFieldsShowing.value=false;
 }
 
+/*
+getLocale(LANG.EN).then((module:any) => {
+  useLangStore().setLang(module.default);
+  console.log(module.default)
+  }
+);
+*/
+
+const strings = computed(()=> useLangStore().langStrings.FlexibleHeader);
 
 </script>
 
@@ -85,22 +95,22 @@ function onModalFieldsWindowSubmit(val:Record<string, any>){
   <header>
     <HeaderDesktop id="header-desktop" ref="headerRef"
       :routes="[
-        {title: 'Главная', route:'/', anchor:'main'},
-        {title: 'Направления и тарифы', route:'/', anchor: 'directions'},
-        {title: 'Часто задаваемые вопросы', route:'/', anchor: 'faq'},
-        {title: 'Адреса терминалов партнера', route:'/', anchor:'agencies'},
+        {title: strings.routes[0], route:'/', anchor:'main'},
+        {title: strings.routes[1], route:'/', anchor: 'directions'},
+        {title: strings.routes[2], route:'/', anchor: 'faq'},
+        {title: strings.routes[3], route:'/', anchor:'agencies'},
       ]"
       :active-route-id = "activeRouteId"
       :left-side-components="[
-        {component: LinkWithIcon, props: {ico: GeoIco, text: 'ул. Аргымак, 1 (бывш. Промышленная,1)',}}
+        {component: LinkWithIcon, props: {ico: GeoIco, text: strings.addressText,}}
       ]"
       :right-side-components="[
-        {component: LinkWithIcon, props: {ico: PhoneIco, text: '+7 7777 155 100', link:'tel:+7 7777 155 100'}},
-        {component: LinkWithIcon, props: {ico: MailIco, text: 'sale@avtorailjet.kz',link:'mailto:sale@avtorailjet.kz'}},
+        {component: LinkWithIcon, props: {ico: PhoneIco, text: strings.phoneText, link:`tel:${strings.phoneText}`}},
+        {component: LinkWithIcon, props: {ico: MailIco, text: strings.mailText,link:`mailto:${strings.mailText}`}},
       ]"
       :partnerLogo="{component: ByteTransitLogoDefault, props:{link:'https://www.sibtrans.ru/route-kazakhstan/'}}"
       :logo = "{component: TizaLogo}"
-      :right-side-separated-component="{component: PrettyButtonFlexible, props:{text: 'Заказать грузоперевозку'}, eventListeners: {click:onHeaderButtonClicked}}"
+      :right-side-separated-component="{component: PrettyButtonFlexible, props:{text: strings.buttonText}, eventListeners: {click:onHeaderButtonClicked}}"
       @logo-click = "router.push('/'); scrollToTop();"
     />
   </header>
@@ -190,6 +200,9 @@ function onModalFieldsWindowSubmit(val:Record<string, any>){
     font-weight: 700;
   }
 #header-desktop:deep(a){
+  color: var(--gray);
+}
+#header-desktop:deep(.lang-selector){
   color: var(--gray);
 }
   /* ==================================================== */

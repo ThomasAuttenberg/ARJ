@@ -1,14 +1,12 @@
 <script setup lang="ts">
 
 import PrettyInput from '@/components/atoms/PrettyInput.vue'
-import { type PropType, ref, type VNodeRef } from 'vue'
+import { computed, type PropType, ref, type VNodeRef } from 'vue'
 import {
   cityValidation,
   emptyValidation,
-  floatValidation,
   mailValidation,
-  numberValidation,
-  phoneValidation, placesValidation, TNCodeValudation, volumeValidation, weightValidation
+  phoneValidation, placesValidation, TNCodeValidation, volumeValidation, weightValidation
 } from '@/hooks/validators'
 import type { InputValuesKeys, ModalWindowPropsType } from '@/hooks/types'
 import PrettyFileOutput from '@/components/atoms/PrettyFileOutput.vue'
@@ -17,7 +15,17 @@ import { createOrder, uploadFile } from '@/hooks/API'
 import type { AxiosError, AxiosResponse } from 'axios'
 import PrettyButtonFlexible from '@/components/atoms/PrettyButtonFlexible.vue'
 import CloseWIndowCross from '@/components/atoms/icons/CloseWIndowCross.vue'
+import {
+  getCISCityMask,
+  getIntegerMask,
+  getNumberMask,
+  getPhoneMask,
+  getTNCodeMask,
+} from '@/hooks/masks'
+import { useLangStore } from '@/stores/lang'
 
+
+const strings = computed(()=> useLangStore().langStrings.ModalFieldsWindow);
 
 const fileSizeLimit = 16000000;
 const link = import.meta.env.VITE_API_URL + '/download/' + import.meta.env.VITE_TEMPLATE_FILENAME;
@@ -45,21 +53,24 @@ const inputsValues = ref<Record<string, InputValuesKeys>>({
   e_mail: {
     model: props.modalWindowProps?.email,
     required: true,
+    showResUntilOk: false,
   },
   phone: {
     model: props.modalWindowProps?.phone,
     required: true,
+    showResUntilOk: false,
   },
   name: {
     model: props.modalWindowProps?.name,
     required: true,
+    showResUntilOk: false,
   },
-  cn_fea_code: { model: '', },
-  place: { model:'', transform: Number},
-  volume: { model: '', transform: Number },
-  weight: { model:'', transform: Number},
-  city_to: { model: ''},
-  city_from: {model:''},
+  cn_fea_code: { model: '', showResUntilOk: false,},
+  place: { model:'', transform: Number, showResUntilOk: false,},
+  volume: { model: '', transform: Number, showResUntilOk: false, },
+  weight: { model:'', transform: Number, showResUntilOk: false,},
+  city_to: { model: '', showResUntilOk: false,},
+  city_from: {model:'', showResUntilOk: false,},
 });
 
 let finalOrderObject : Record<string,any> = {};
@@ -73,14 +84,13 @@ const submit = ()=>{
     if(value.error || (!value.model && value.required)){
       hasError = true;
       if(!value.error) value.error = true;
+      value.showResUntilOk = true;
       return;
     }
     if(value.model)
       submitObject[key] = value.transform ? value.transform(value.model) : value.model;
   });
-  if(hasError){
-    emit('successNotificationRequest','Корректно заполните указанные поля');
-  }else{
+  if(!hasError){
     windowNextStep.value = true;
     finalOrderObject = submitObject;
   }
@@ -94,13 +104,13 @@ const fileValidator = (file : File)=>{
 }
 
 const onValidationError = ()=>{
-  emit('warningNotificationRequest','Ошибка загрузки файла: поддерживаемые форматы .docx, .doc. Размер файла: до 15Mb', 5000);
+  emit('warningNotificationRequest',strings.value.fileErrorNotification, 5000);
 }
 
 let uploadedFile : File;
 const onFileUpload = (file : File)=>{
   uploadedFile = file;
-  emit('successNotificationRequest','Файл загружен');
+  emit('successNotificationRequest',strings.value.fileSuccessNotification);
 }
 
 const buttonLoadingEffect = ref(false);
@@ -110,14 +120,14 @@ const finalSubmit = async () =>{
     await uploadFile(uploadedFile).then((res: AxiosResponse) => {
       finalOrderObject['file_path'] = res.data['file_path'] as string;
     }).catch((err: AxiosError) => {
-      emit('warningNotificationRequest', 'Ошибка при отправке файла! Файл проигнорирован');
+      emit('warningNotificationRequest', strings.value.sendFileError);
       console.error("Ошибка при загрузке файла: " + err.message);
     });
   }
-  createOrder(finalOrderObject).then((res:AxiosResponse)=>{
+  createOrder(finalOrderObject).then(()=>{
     successStep.value = true;
   }).catch((err : AxiosError)=>{
-    emit('warningNotificationRequest', 'Ошибка при отправке заявки!');
+    emit('warningNotificationRequest', strings.value.orderError);
     console.error("Ошибка при отправке заказа: " + err.message);
   }).finally(()=>{
     buttonLoadingEffect.value=false;
@@ -134,13 +144,13 @@ const finalSubmit = async () =>{
       <CloseWIndowCross class="modal-window-close-cross" @click="emit('escape')"/>
       <div class = "modal-fields-text-description">
         <div class ="text-description-title">
-          Заявка успешно оформлена
+          {{ strings.orderSuccessTitle }}
         </div>
         <div class ="text-description-text">
-          В ближайшее время с вами свяжутся наши менеджеры
+          {{ strings.orderSuccessText }}
         </div>
       </div>
-      <RouterLink to="/" ><PrettyButtonFlexible style="width:100%" text="Вернуться на главную" @click="emit('escape');"/></RouterLink>
+      <RouterLink to="/" ><PrettyButtonFlexible style="width:100%" :text="strings.successButtonText" @click="emit('escape');"/></RouterLink>
     </div>
 
 
@@ -148,88 +158,104 @@ const finalSubmit = async () =>{
       <CloseWIndowCross class="modal-window-close-cross" @click="emit('escape')"/>
       <div class = "modal-fields-text-description">
         <div class ="text-description-title">
-          Расчет стоимости перевозки
+          {{ strings.fileWindowTitle }}
         </div>
         <div class ="text-description-text">
-          Заполните и прикрепите опись груза для оформления заявки
+          {{ strings.fileWindowSubtitle }}
         </div>
       </div>
       <div class="modal-fields-elements">
-        <PrettyFileOutput text="Опись образец" :link/>
+        <PrettyFileOutput :text="strings.fileDownloadText" :link/>
         <PrettyFileInput
-          text="Загрузить файл"
-          additional-text="(не более 15Mb)"
-          text-uploaded="Загрузить другой файл"
+          :text="strings.fileUploadText"
+          :additional-text="strings.fileUploadHint"
+          :text-uploaded="strings.fileUploadAnother"
           :fileValidator
           @validationError="onValidationError"
           @fileUploaded="onFileUpload"
         />
       </div>
-      <PrettyButtonFlexible :is-loading="buttonLoadingEffect" class="modal-file-window-btn" text="Оформить заявку" @click="finalSubmit"/>
+      <PrettyButtonFlexible :is-loading="buttonLoadingEffect" class="modal-file-window-btn" :text="strings.fileButtonText" @click="finalSubmit"/>
     </div>
 
     <div ref="modalFieldsWindow" class="modal-fields-window" :class="{'next-step':windowNextStep,'success-step':successStep}" @click.prevent.stop>
       <CloseWIndowCross class="modal-window-close-cross" @click="emit('escape')"/>
        <div class = "modal-fields-text-description">
          <div class ="text-description-title">
-           Расчет стоимости перевозки
+           {{ strings.fieldsWindowTitle }}
          </div>
          <div class ="text-description-text">
-           Заполните детали заявки
+           {{ strings.fieldsSubtitle }}
          </div>
        </div>
 
       <div ref="elements" class = "modal-fields-elements" @submit.prevent>
         <PrettyInput
           v-model:input-val="inputsValues.city_from.model"
-          :validator="{validator: cityValidation, errorText:'Название города должно быть введено на кириллице'}"
+          :validator="{validator: cityValidation, errorText:strings.fieldsInputs[0].errorText}"
           v-model:input-error="inputsValues.city_from.error"
-          placeholder="Город отправления"/>
+          :mask="getCISCityMask()"
+          v-model:turn-validate-until-correct="inputsValues.city_from.showResUntilOk"
+          :placeholder="strings.fieldsInputs[0].placeholder"/>
         <PrettyInput
           v-model:input-val="inputsValues.city_to.model"
-          placeholder="Город получения"
-          :validator="{validator: cityValidation, errorText:'Название города должно быть введено на кириллице'}"
+          :placeholder="strings.fieldsInputs[1].placeholder"
+          :validator="{validator: cityValidation, errorText:strings.fieldsInputs[1].errorText}"
+          :mask="getCISCityMask()"
+          v-model:turn-validate-until-correct="inputsValues.city_to.showResUntilOk"
           v-model:input-error="inputsValues.city_to.error"/>
         <div class ="modal-fields-elements-inline">
           <PrettyInput
             v-model:input-val="inputsValues.weight.model"
-            :validator="{validator: weightValidation, errorText:'Целое или дробное число (не более 2 цифр после точки)'}"
+            :validator="{validator: weightValidation, errorText:strings.fieldsInputs[2].errorText}"
             v-model:input-error="inputsValues.weight.error"
-            placeholder="Вес, кг"/>
+            v-model:turn-validate-until-correct="inputsValues.weight.showResUntilOk"
+            :mask="getNumberMask(2,6)"
+            :placeholder="strings.fieldsInputs[2].placeholder"/>
           <PrettyInput
             v-model:input-val="inputsValues.volume.model"
-            :validator="{validator:volumeValidation,errorText:'Целое или дробное число (не более 3 цифр после точки)'}"
+            :validator="{validator:volumeValidation,errorText:strings.fieldsInputs[3].errorText}"
             v-model:input-error="inputsValues.volume.error"
-            placeholder="Объем, м3"/>
+            v-model:turn-validate-until-correct="inputsValues.volume.showResUntilOk"
+            :mask="getNumberMask(3,6)"
+            :placeholder="strings.fieldsInputs[3].placeholder"/>
         </div>
         <PrettyInput
           v-model:input-val="inputsValues.place.model"
-          :validator="{validator:placesValidation,errorText:'Число, менее 1млн'}"
+          :mask="getIntegerMask(1,999999)"
+          :validator="{validator:placesValidation,errorText:strings.fieldsInputs[4].errorText}"
           v-model:input-error="inputsValues.place.error"
-          placeholder="Количество мест, шт"/>
+          v-model:turn-validate-until-correct="inputsValues.place.showResUntilOk"
+          :placeholder="strings.fieldsInputs[4].placeholder"/>
         <PrettyInput
           v-model:input-val="inputsValues.cn_fea_code.model"
-          :validator="{validator:TNCodeValudation, errorText:'Десять цифр'}"
+          :mask="getTNCodeMask()"
+          :validator="{validator:TNCodeValidation, errorText:strings.fieldsInputs[5].errorText}"
           v-model:input-error="inputsValues.cn_fea_code.error"
-          placeholder="Код ТН ВЭД"/>
+          v-model:turn-validate-until-correct="inputsValues.cn_fea_code.showResUntilOk"
+          :placeholder="strings.fieldsInputs[5].placeholder"/>
         <PrettyInput
           v-model:input-val="inputsValues.name.model"
           v-model:input-error="inputsValues.name.error"
-          :validator="{validator:emptyValidation}"
-          placeholder="Ваше имя*"/>
+          :mask="getCISCityMask()"
+          :validator="{validator:emptyValidation, errorText:strings.fieldsInputs[6].errorText}"
+          v-model:turn-validate-until-correct="inputsValues.name.showResUntilOk"
+          :placeholder="strings.fieldsInputs[6].placeholder"/>
 
         <PrettyInput
           v-model:input-val="inputsValues.phone.model"
-          mask="+{7}(000)000-00-00"
-          :validator="{validator:phoneValidation}"
+          :mask="getPhoneMask()"
+          :validator="{validator:phoneValidation, errorText:strings.fieldsInputs[7].errorText}"
           v-model:input-error="inputsValues.phone.error"
-          placeholder="Телефон*" />
+          v-model:turn-validate-until-correct="inputsValues.phone.showResUntilOk"
+          :placeholder="strings.fieldsInputs[7].placeholder" />
         <PrettyInput
           v-model:input-val="inputsValues.e_mail.model"
-          :validator="{validator:mailValidation, errorText:'Адрес почтового ящика введен некорректно'}"
+          :validator="{validator:mailValidation, errorText:strings.fieldsInputs[8].errorText}"
           v-model:input-error="inputsValues.e_mail.error"
-          placeholder="Почта*"/>
-        <PrettyButtonFlexible text="Далее" @click="submit"/>
+          v-model:turn-validate-until-correct="inputsValues.e_mail.showResUntilOk"
+          :placeholder="strings.fieldsInputs[8].placeholder"/>
+        <PrettyButtonFlexible :text="strings.fieldsButtonText" @click="submit"/>
       </div>
 
     </div>

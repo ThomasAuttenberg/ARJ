@@ -1,4 +1,4 @@
-export default function loadScript(src : string) {
+export default function scriptLoader(src : string) {
   return new Promise((resolve, reject) => {
 
     const existingScript = document.querySelector(`script[src="${src}"]`);

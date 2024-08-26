@@ -9,4 +9,5 @@ export interface InputValuesKeys{
   required?:boolean,
   error?:boolean,
   transform?:Function,
+  showResUntilOk?:boolean
 }

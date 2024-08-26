@@ -2,13 +2,18 @@
 
 import ByteTransitLogo from '@/components/atoms/icons/ByteTransitLogo.vue'
 import PrettyButtonFlexible from '@/components/atoms/PrettyButtonFlexible.vue'
+import { useLangStore } from '@/stores/lang'
+import { computed } from 'vue'
+
+const strings = computed(()=> useLangStore().langStrings.PartnershipBalk);
+
 </script>
 
 <template>
 <div class = "p-balk-wrapper">
   <div class = "p-balk-content">
     <div class="p-balk-title">
-      Официальный партнер
+      {{strings.officialPartner}}
     </div>
     <div class="p-balk-right-block">
       <div class="p-balk-logo">
@@ -16,7 +21,7 @@ import PrettyButtonFlexible from '@/components/atoms/PrettyButtonFlexible.vue'
       </div>
       <div class="p-balk-link-button">
         <a href="https://www.sibtrans.ru/route-kazakhstan/">
-        <PrettyButtonFlexible class="p-balk-link-button-button" text="Перейти на сайт"/>
+        <PrettyButtonFlexible class="p-balk-link-button-button" :text="strings.buttonText"/>
         </a>
       </div>
     </div>
@@ -52,7 +57,7 @@ import PrettyButtonFlexible from '@/components/atoms/PrettyButtonFlexible.vue'
   text-transform: uppercase;
   color: white;
 }
-.p-balk-logo:deep{
+.p-balk-logo{
   display: flex;
   justify-content: center;
 }

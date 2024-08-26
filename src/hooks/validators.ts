@@ -20,7 +20,7 @@ export function floatValidation(value: string | undefined) {
   }
   return true;
 }
-export function emptyValidation(value: string | undefined) {return true;}
+export function emptyValidation() {return true;}
 export function numberValidation(value: string | undefined) {
   if (value) {
     const numberRegExp = /^[0-9]+$/;
@@ -28,19 +28,25 @@ export function numberValidation(value: string | undefined) {
   }
   return true;
 }
-export function TNCodeValudation(value: string | undefined) {
+export function TNCodeValidation(value: string | undefined) {
   if(value)
     return /^\d{10}$/.test(value);
   return true;
 }
 export function weightValidation(value: string | undefined) {
   if(value)
-    return /^\d+(\.\d{1,2})?$/.test(value);
+    if(Number(value) != 0)
+      return /^\d+(\.\d{1,2})?$/.test(value);
+    else
+    return false;
   return true;
 }
 export function volumeValidation(value: string | undefined) {
   if(value)
-    return /^\d+(\.\d{1,3})?$/.test(value);
+    if(Number(value) != 0)
+      return /^\d+(\.\d{1,3})?$/.test(value);
+    else
+      return false;
   return true;
 }
 export function placesValidation(value: string | undefined) {

@@ -5,17 +5,18 @@ import DirectionsAndTariffs from '@/components/organisms/DirectionsAndTariffs.vu
 import FAQBlock from '@/components/organisms/FAQBlock.vue'
 import TransportCalculationBlock from '@/components/organisms/TransportCalculationBlock.vue'
 import AgenciesCities from '@/components/organisms/AgenciesCities.vue'
-import { type PropType } from 'vue'
+import { computed, type PropType } from 'vue'
 import type { ModalWindowPropsType } from '@/hooks/types'
-import PartnershipBalk from '@/components/atoms/PartnershipBalk.vue'
-const props = defineProps({
+import PartnershipBalk from '@/components/organisms/PartnershipBalk.vue'
+import { useLangStore } from '@/stores/lang'
+defineProps({
   modalWindowShowing: {type: Boolean},
   modalWindowProps: {type: Object as PropType<ModalWindowPropsType>}
 })
-const contentWithLink = 'Города представительства партнеров указаны <a class="decorated-link" href="/#agencies">здесь</a>';
 const emits = defineEmits(['watchingElement', 'exitModalWindow','callModalWindow','modalWindowSubmit', 'successNotificationRequest', 'warningNotificationRequest']);
 const fd = (index:number) => {emits('watchingElement',index)}
 
+const strings = computed(()=> useLangStore().langStrings.FAQBlock);
 
 </script>
 
@@ -25,13 +26,12 @@ const fd = (index:number) => {emits('watchingElement',index)}
     <DirectionsAndTariffs id="directions" v-intersection="[fd,1]" @callModalWindow="emits('callModalWindow', $event);"/>
     <PartnershipBalk/>
     <FAQBlock id="faq" v-intersection="[fd,2]"
-      title="Часто задаваемые вопросы"
-      :items = "[
-        {title:'Где передать груз к перевозке?', content:contentWithLink},
-        {title:'Как и где производить оплату за перевозку?', content:'Оплата за перевозку взимается до, или после фактически оказанной услуги, по предварительному согласованию Сторон и отражено в документе подписанном Сторонами'},
-        {title: 'Застрахован ли груз?', content:'Компания «AvtoRail Jet» несет полную материальную ответственность за вверенное имущество и принятые на себя обязательства, в рамках действующего законодательства Республики Казахстан и Российской Федерации'},
-        {title: 'Какой пакет документов требуется к перевозке?',content:'Для физических лиц - опись перевозимого груза; CMR; СНТ; код ТН ВЭД (в случае отсутствия данных документов, компания “AvtoRail Jet” содействует в формировании пакета документов).\n'+
-'</br>Для юридических лиц - CMR; Invoice; ЭСФ; копия договора на поставку; разрешение на вывоз (в случае ограничений)'},
+      :title="strings.title"
+      :items="[
+        {title:strings.items[0].title, content:strings.items[0].content},
+        {title:strings.items[1].title, content:strings.items[1].content},
+        {title:strings.items[2].title, content:strings.items[2].content},
+        {title:strings.items[3].title, content:strings.items[3].content},
       ]"
     />
     <TransportCalculationBlock id="calculation-block"

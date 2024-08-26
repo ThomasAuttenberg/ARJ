@@ -1,22 +1,24 @@
 <script setup lang="ts">
 
 import PrettyButtonFlexible from '@/components/atoms/PrettyButtonFlexible.vue'
-import scrollToCalculations from '@/hooks/ScrollToCalculations'
-//const emits = defineEmits(['callTransitionToCalculations'])
+import scrollToCalculations from '@/hooks/UIActions/scrollToCalculations'
+import { computed } from 'vue'
+import { useLangStore } from '@/stores/lang'
+
+const strings = computed(()=> useLangStore().langStrings.IntroductionImage);
 </script>
 
 <template>
   <div class="mainImageContainer">
     <div class="mainImageContent">
       <div class="mainImageContent-title">
-        Экспресс доставка из Казахстана в Россию
+        {{ strings?.title }}
       </div>
       <div class = "mainImageContent-desc">
-        Полный спектр транспортно-логистических услуг, включающих транспортировку,
-        хранение и терминальную обработку грузов от двери Отправителя до двери Получателя
+        {{ strings?.description }}
       </div>
       <div class="mainImageContent-button">
-        <PrettyButtonFlexible :text="'Заказать грузоперевозку'" @click="scrollToCalculations()"/>
+        <PrettyButtonFlexible :text="strings?.buttonText" @click="scrollToCalculations()"/>
       </div>
     </div>
   </div>
@@ -53,6 +55,10 @@ import scrollToCalculations from '@/hooks/ScrollToCalculations'
   height: 665px;
   background: url('@/assets/images/eurasionMap.svg') center center no-repeat;
   background-size: 1180px 665px;
+}
+.mainImageContent::after{
+  content: url('@/assets/images/eurasionMap.svg') url('@/assets/images/eurasionMap-mobile.svg');
+  position:absolute; width:0; height:0; overflow:hidden; z-index:-1;
 }
 .mainImageContainer{
   container-type: inline-size;

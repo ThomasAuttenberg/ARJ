@@ -1,7 +1,6 @@
 <script setup lang="ts">
 
 import { computed, onMounted, type PropType, ref, type VNodeRef, watch } from 'vue'
-import { useRoute } from 'vue-router'
 import { IMask } from 'vue-imask'
 
 type Validator = (val: string|undefined) => boolean;
@@ -18,15 +17,14 @@ const props = defineProps({
   inputError: {type: Boolean, default: false},
   type : {type: String},
   title: {type: String},
-  mask: {type: String},
+  mask: {type: Object as PropType<any>},
 })
-
-
 
 const inputTitle = computed(()=>{
   return props.title ? props.title : props.placeholder
 })
 
+const validationMode = defineModel('turnValidateUntilCorrect');
 const isFocus = ref(false)
 const inputVal = defineModel<string>('inputVal')
 const isComplete  = ref(Boolean(inputVal.value?.length))
@@ -34,18 +32,20 @@ const isError = defineModel<boolean>('inputError')
 isError.value = false
 const inptRef = ref<VNodeRef | null>(null)
 
-const mistakeTextShowing = computed(()=> isError.value && isComplete.value);
+
+
+const mistakeTextShowing = computed(()=> {
+  return (validationMode.value || typeof validationMode.value == 'undefined') && isError.value;
+});
 
 const validate = (value:string|undefined)=>{
   if(props.validator) {
-    isError.value = !props.validator.validator(value)
+    isError.value = !props.validator.validator(value);
+    if(!isError.value && validationMode.value){validationMode.value = false;}
   }
-  isComplete.value = !!value?.length
 }
 
-const maskOptions = {
-  mask: props.mask, // Пример маски для телефонного номера
-};
+const maskOptions = props.mask;
 
 // Создаем объект маски
 const iMaskObject = props.mask ? IMask.createMask(maskOptions) : null;
@@ -59,13 +59,15 @@ const formatPhoneNumber = (input: string)=>{
   return null;
 }
 
-
 watch(inputVal, (value)=>{
   if(value && iMaskObject){
     inputVal.value = formatPhoneNumber(value) as unknown as string;
   }
-  validate(value)
+  validate(inputVal.value)
+  //console.log("mistakeTextShowing: "+mistakeTextShowing.value)
+  isComplete.value = !!value?.length
 })
+
 onMounted(()=>{
   validate(inputVal.value);
 })
@@ -88,7 +90,7 @@ function setCursorToEnd(event: Event) {
 
 <template>
   <div class="input-top-wrapper">
-    <div class = "input-wrapper" :class="{focus:isFocus, error:isError, complete:isComplete}">
+    <div class = "input-wrapper" :class="{focus:isFocus, error:isError && mistakeTextShowing, complete:isComplete}">
       <span v-if="isFocus || isComplete" class = "additionalPlaceholder">{{inputTitle}}</span>
       <input :id="inputId" :type ref = "inptRef" class="input" v-model="inputVal" :placeholder="!isFocus ? placeholder : ''"
              @focusin="isFocus = true; setCursorToEnd($event)"

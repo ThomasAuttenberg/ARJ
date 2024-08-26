@@ -8,53 +8,57 @@ import BoxLamp from '@/components/atoms/icons/DirectionsAndTraffic/BoxLamp.vue'
 import type { IProvidedComponent } from '@/hooks/types'
 import PrettyButtonFlexible from '@/components/atoms/PrettyButtonFlexible.vue'
 import GeoIcoGrayLight from '../atoms/icons/GeoIcoGrayLight.vue'
-import type { Component } from 'vue'
+import { type Component, computed } from 'vue'
 import GeoIcoWhite from '@/components/atoms/icons/GeoIcoWhite.vue'
+import scrollToCalculations from '@/hooks/UIActions/scrollToCalculations'
+import { useLangStore } from '@/stores/lang'
 
 function getEnumerationComponent(text: string, ico?:Component) : IProvidedComponent {
   return {component: LinkWithIcon, props: {text: text, ico: ico? ico : GeoIcoGrayLight}}
 }
-const emits = defineEmits(['callModalWindow']);
+defineEmits(['callModalWindow']);
+const strings = computed(()=> useLangStore().langStrings.DirectionsAndTraffics);
+
 </script>
 
 <template>
   <div class="directions-and-traffic-container">
     <div class="directions-and-traffic-titles">
       <div class = "directions-and-traffic-titles-title">
-        Направления и тарифы
+        {{ strings.title }}
       </div>
       <div class = "directions-and-traffic-titles-subtitle">
-        Приоритетные направления грузоперевозок компании «AvtoRail Jet»
+        {{ strings.description }}
       </div>
     </div>
     <div class="directions-and-traffic-cards-container">
       <card-with-ico class="directions-and-traffic-card"
-        :title="'Направление зоны охвата услуг - Казахстан и Россия'"
-        :subtitle="'Осуществляем скорую доставку сборных грузов до/в'"
+        :title="strings.cards[0].title"
+        :subtitle="strings.cards[0].subtitle"
         :ico="RuKazakhMap"
         :enumeration="[
-          getEnumerationComponent('Казахстан (Алматы)'),
-          getEnumerationComponent('Вся территория России'),
+          getEnumerationComponent(strings.cards[0].enumeration[0]),
+          getEnumerationComponent(strings.cards[0].enumeration[1]),
         ]"
       />
       <card-with-ico class="directions-and-traffic-card"
-                     :title="'Всегда в курсе событий «Рынка грузоперевозок»'"
-                     :subtitle="'Предоставляем эксклюзивные предложения своим Заказчикам по режиму “скорой” доставки'"
+                     :title="strings.cards[1].title"
+                     :subtitle="strings.cards[1].subtitle"
                      :ico="FlyingBox"
       />
       <card-with-ico class="directions-and-traffic-card last-card"
-                     :title="'Персональная логистика для бизнеса'"
-                     :subtitle="'Эксклюзивное предложение\nСкорая доставка по направлениям:'"
+                     :title="strings.cards[2].title"
+                     :subtitle="strings.cards[2].subtitle"
                      :ico="BoxLamp"
                      :enumeration="[
-        getEnumerationComponent('Алматы - Новосибирск за 2 дня', GeoIcoWhite),
-        getEnumerationComponent('Алматы - Москва за 5 дней', GeoIcoWhite),
-        getEnumerationComponent('Алматы - Казань за 4 дня', GeoIcoWhite),
-        getEnumerationComponent('Алматы - Екатеринбург за 4 дня', GeoIcoWhite)
+        getEnumerationComponent(strings.cards[2].enumeration[0], GeoIcoWhite),
+        getEnumerationComponent(strings.cards[2].enumeration[1], GeoIcoWhite),
+        getEnumerationComponent(strings.cards[2].enumeration[2], GeoIcoWhite),
+        getEnumerationComponent(strings.cards[2].enumeration[3], GeoIcoWhite)
       ]"
       />
       <div class = "directions-and-traffic-card-btn-container">
-        <PrettyButtonFlexible class="directions-and-traffic-card-btn" :text="'Оформить заявку'" @click="emits('callModalWindow', $event);"/>
+        <PrettyButtonFlexible class="directions-and-traffic-card-btn" :text="strings.buttonText" @click="scrollToCalculations();"/>
         <PrettyButtonFlexible class="directions-and-traffic-card-btn hidden"/>
         <PrettyButtonFlexible class="directions-and-traffic-card-btn hidden"/>
       </div>

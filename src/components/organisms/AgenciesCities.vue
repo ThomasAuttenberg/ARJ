@@ -1,12 +1,12 @@
 <script setup lang="ts">
 
-import { onMounted, ref, type VNodeRef} from 'vue'
+import { computed, onMounted, ref, type VNodeRef } from 'vue'
 import type {  LngLat,  YMapLocationRequest } from 'ymaps3'
-import loadScript from '@/hooks/loadScript'
+import scriptLoader from '@/hooks/ScriptLoader'
 import { getCoordinates } from '@/hooks/API'
 import type { AxiosError } from 'axios'
 import type { ClustererObject, Feature } from '@yandex/ymaps3-types/packages/clusterer'
-import type { MutationType } from 'pinia'
+import { useLangStore } from '@/stores/lang'
 
 
 const mapCenter : LngLat = [70.030206, 50.920340];
@@ -19,7 +19,7 @@ const zoomDefaultValue = 3;
 
 async function initMap(mapCenter : LngLat) {
 
-  await loadScript("https://api-maps.yandex.ru/v3/?apikey=" + import.meta.env.VITE_MAPS_API_KEY + "&lang=ru_RU")
+  await scriptLoader("https://api-maps.yandex.ru/v3/?apikey=" + import.meta.env.VITE_MAPS_API_KEY + "&lang=ru_RU")
 
     .catch((error: Error) => {
       console.error("Ошибка при подключении к API. Проверьте ключ и убедитесь, что установлены HTTPReferer-ы в ЛК https://developer.tech.yandex.ru/");
@@ -55,6 +55,7 @@ async function initMap(mapCenter : LngLat) {
 
   const tooltip = document.createElement('div');
   tooltip.className = 'map-agency-tooltip';
+  tooltip.style.display = 'none';
 
   const toolTipElement = new ymaps3.YMapMarker(
     {
@@ -66,12 +67,13 @@ async function initMap(mapCenter : LngLat) {
 
   let toolTipLinkedFeauture : Feature | null = null
   const showToolTip = (feauture: Feature)=>{
+    tooltip.style.display = 'unset';
     toolTipElement.update({coordinates:feauture.geometry.coordinates});
     tooltip.innerText=(feauture as any).properties.name;
     toolTipLinkedFeauture = feauture;
   }
   const hideToolTip = ()=>{
-    toolTipElement.update({coordinates:[0,0]});
+    tooltip.style.display = 'none';
     toolTipLinkedFeauture = null;
   }
 // Start observing the target node for configured mutations
@@ -84,7 +86,9 @@ async function initMap(mapCenter : LngLat) {
 
     markerContainer.addEventListener('mouseover', ()=>{
       showToolTip(feature);
-
+    });
+    markerContainer.addEventListener('click',()=>{
+      showToolTip(feature);
     });
     markerContainer.addEventListener('mouseleave',()=>{
       hideToolTip();
@@ -161,10 +165,10 @@ async function initMap(mapCenter : LngLat) {
 
 
 onMounted(() => {
-
-  const width = window.innerWidth;
   initMap(mapCenter);
 })
+
+const strings = computed(()=> useLangStore().langStrings.AgenciesCities);
 
 </script>
 
@@ -172,7 +176,7 @@ onMounted(() => {
 <div class="cities-wrapper">
   <div class="cities-title-wrapper">
     <div class = cities-title>
-      Города представительства партнеров
+      {{ strings.title }}
     </div>
   </div>
   <div :ref="mapRef" class="meow" id="map"></div>

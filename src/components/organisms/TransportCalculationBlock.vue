@@ -2,11 +2,13 @@
 
 import PrettyInput from '@/components/atoms/PrettyInput.vue'
 import { emptyValidation, mailValidation, phoneValidation } from '@/hooks/validators'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import PrettyButtonFlexible from '@/components/atoms/PrettyButtonFlexible.vue'
 import type { InputValuesKeys } from '@/hooks/types'
 import { createOrder } from '@/hooks/API'
-import type { AxiosError, AxiosResponse } from 'axios'
+import type { AxiosError } from 'axios'
+import { getCISCityMask, getPhoneMask } from '@/hooks/masks'
+import { useLangStore } from '@/stores/lang'
 
 const emits = defineEmits(['callModalWindow','warningNotificationRequest','successNotificationRequest']);
 
@@ -15,14 +17,20 @@ const inputsValues = ref<Record<string, InputValuesKeys>>({
   e_mail: {
     model: '',
     required: true,
+    error: false,
+    showResUntilOk: false,
   },
   phone: {
     model: '',
     required: true,
+    error: false,
+    showResUntilOk: false,
   },
   name: {
     model: '',
     required: true,
+    error: false,
+    showResUntilOk: false,
   },
 });
 
@@ -34,7 +42,7 @@ const submit = ()=>{
 
   const onVerifyEnd = (object:Record<string,any>)=>{
     buttonLoadingEffect.value = true;
-    createOrder(object).then((res:AxiosResponse)=>{
+    createOrder(object).then(()=>{
       emits('callModalWindow', {success:true});
     }).catch((err : AxiosError)=>{
       emits('warningNotificationRequest', 'Ошибка при отправке данных!');
@@ -50,18 +58,18 @@ const submit = ()=>{
     if(value.error || (!value.model && value.required)){
       hasError = true;
       if(!value.error) value.error = true;
+      value.showResUntilOk = true;
       return;
     }
     if(value.model)
       submitObject[key] = value.transform ? value.transform(value.model) : value.model;
   });
-  if(hasError){
-    emits('successNotificationRequest', 'Корректно заполните все поля');
-  }else{
+  if(!hasError){
     onVerifyEnd(submitObject);
   }
 };
 
+const strings = computed(()=> useLangStore().langStrings.TransportCalculationBlock);
 
 </script>
 
@@ -69,10 +77,10 @@ const submit = ()=>{
 <div class="transport-calculation-block">
   <div class="transport-calculation-block-text">
     <div class="transport-calculation-block-title">
-      Расчет стоимости перевозки
+      {{ strings.title }}
     </div>
     <div class="transport-calculation-block-subtitle">
-      Оставьте заявку на расчет стоимости и наш менеджер свяжется с Вами
+      {{ strings.subtitle }}
     </div>
   </div>
   <div class = "transport-calculation-block-form-wrapper">
@@ -80,34 +88,38 @@ const submit = ()=>{
       <div class = "transport-calculation-block-inputs">
         <PrettyInput input-id="transport-calculation-name"
                      v-model:input-val="inputsValues.name.model"
-                     :validator="{validator:emptyValidation}"
+                     :mask="getCISCityMask()"
+                     :validator="{validator:emptyValidation, errorText:strings.inputs[0].errorText}"
                      v-model:input-error="inputsValues.name.error"
+                     v-model:turn-validate-until-correct="inputsValues.name.showResUntilOk"
                      class="transport-calculation-block-form-input"
-                     placeholder="Ваше имя"/>
+                     :placeholder="strings.inputs[0].placeholder"/>
         <PrettyInput input-id="transport-calculation-phone"
-                     :validator="{validator:phoneValidation, errorText:'Номер телефона введен некорректно'}"
+                     :validator="{validator:phoneValidation, errorText:strings.inputs[1].errorText}"
                      v-model:input-val="inputsValues.phone.model"
                      v-model:input-error="inputsValues.phone.error"
+                     v-model:turn-validate-until-correct="inputsValues.phone.showResUntilOk"
                      class="transport-calculation-block-form-input"
-                     placeholder="+7 (xxx) xxx xx xx"
-                     mask="+{7}(000)000-00-00"
-                     title="Телефон" />
+                     :placeholder="strings.inputs[1].placeholder"
+                     :mask="getPhoneMask()"
+                     :title="strings.inputs[1].title" />
         <PrettyInput input-id="transport-calculation-email"
-                     :validator="{validator: mailValidation, errorText:'Адрес почтового ящика введен некорректно'}"
+                     :validator="{validator: mailValidation, errorText:strings.inputs[2].errorText}"
                      v-model:input-val="inputsValues.e_mail.model"
                      v-model:input-error="inputsValues.e_mail.error"
+                     v-model:turn-validate-until-correct="inputsValues.e_mail.showResUntilOk"
                      class="transport-calculation-block-form-input"
-                     placeholder="Почта"/>
+                     :placeholder="strings.inputs[2].placeholder"/>
       </div>
       <div>
         <span style="margin-right: 5px">+</span>
-        <a class="transport-calculations-details" @click="callModalWindow">Уточнить детали заявки</a>
+        <a class="transport-calculations-details" @click="callModalWindow">{{ strings.specifyButton }}</a>
       </div>
-      <PrettyButtonFlexible :is-loading="buttonLoadingEffect" text="Заказать грузоперевозку" @click="submit"/>
+      <PrettyButtonFlexible :is-loading="buttonLoadingEffect" :text="strings.buttonText" @click="submit"/>
     </div>
     <div class = "policy-accepting-text">
-      Нажимая кнопку, Вы соглашаетесь с
-      «<RouterLink class="policy-accepting-text-link" to="/policy">Политикой по обработке персональных данных</RouterLink>»
+      {{strings.policyAccepting[0]}}
+      «<RouterLink class="policy-accepting-text-link" to="/policy">{{ strings.policyAccepting[1] }}</RouterLink>»
     </div>
   </div>
 </div>

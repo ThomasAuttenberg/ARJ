@@ -2,7 +2,7 @@
 
 import DetailsIcoClosed from '@/components/atoms/icons/DetailsIcoClosed.vue'
 import DetailsIcoOpened from '@/components/atoms/icons/DetailsIcoOpened.vue'
-import { ref, watch } from 'vue'
+import { ref } from 'vue'
 
 defineProps({
   title: {type: String, required: true},

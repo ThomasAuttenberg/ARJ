@@ -1,12 +1,17 @@
 <script setup lang="ts">
+import { computed } from 'vue'
+import { useLangStore } from '@/stores/lang'
+
+const strings = computed(()=> useLangStore().langStrings.NotFoundPage);
+
 </script>
 
 <template>
   <div class="not-found-container">
     <div class="not-found-container-content">
-      <div class="not-found-title">404. Данной страницы не существует :(</div>
+      <div class="not-found-title">{{ strings.title }}</div>
       <div class="not-found-back-link">
-        <RouterLink class="not-found-back-link-link" to="/">Вернуться на главную</RouterLink>
+        <RouterLink class="not-found-back-link-link" to="/">{{ strings.action }}</RouterLink>
       </div>
     </div>
   </div>

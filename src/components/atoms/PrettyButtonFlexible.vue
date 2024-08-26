@@ -30,7 +30,7 @@ function onClick(event: MouseEvent) {
   font-size: 15px;
   line-height: 140%;
   color: white;
-  height: 51px;
+
   transition: background-color 0.4s, content 0.1s;
   box-shadow: 0 15px 20px -10px rgba(241, 157, 0, 0.4);
 }

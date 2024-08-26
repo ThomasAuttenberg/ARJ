@@ -1,13 +1,15 @@
 <script setup lang="ts">
 import { RouterLink } from 'vue-router'
-import { type PropType, ref, type VNodeRef } from 'vue'
+import {type PropType, ref, type VNodeRef } from 'vue'
 import type {IProvidedComponent} from '@/hooks/types'
+import LangSelector from '@/components/organisms/LangSelector.vue'
 
 interface IRoutesProp{
   route: string,
   anchor?: string
   title: string,
 }
+
 
 const emits = defineEmits(["logoClick"])
 
@@ -78,6 +80,12 @@ function onRouterLinkClick(val:number){
     }
   });
 }
+
+const localization = ref(false);
+if(import.meta.env.VITE_LOCALIZATION_ON === "true"){
+  localization.value = true;
+}
+
 </script>
 
 <template>
@@ -92,6 +100,7 @@ function onRouterLinkClick(val:number){
         </div>
         <div class="header-tablet-links-block">
           <component v-for="(comp,index) in props.rightSideComponents" :key="index" :is="comp.component" v-bind="comp.props" v-on="comp.eventListeners ? comp.eventListeners : {}"/>
+          <LangSelector v-if="localization" class="lang-selector" group-name="tablet_group" :display-style="'tablet'"/>
         </div>
       </div>
         <div class = "header-separator tablet"/>
@@ -103,6 +112,7 @@ function onRouterLinkClick(val:number){
           <component class="header-logo-logo desktop" @click="onLogoClick" :is="logo?.component" v-on="logo?.eventListeners ? logo.eventListeners : {}"/>
           <component class="desktop" v-for="(comp,index) in props.leftSideComponents" :key="index" :is="comp.component" v-bind="comp.props" v-on="comp.eventListeners ? comp.eventListeners : {}"/>
           <component class="desktop" v-for="(comp,index) in props.rightSideComponents" :key="index" :is="comp.component" v-bind="comp.props" v-on="comp.eventListeners ? comp.eventListeners : {}"/>
+          <LangSelector v-if="localization" class="desktop lang-selector" group-name="desktop_group" :display-style="'desktop'"/>
         <div v-if=rightSideSeparatedComponent class="header-order-button not-mobile">
           <component
             :is="rightSideSeparatedComponent.component"
@@ -116,11 +126,12 @@ function onRouterLinkClick(val:number){
                      v-on="partnerLogo?.eventListeners ? partnerLogo.eventListeners : {}"
           />
         </div>
-        <div class="not-desktop">
-        <input ref="menuRef" type="checkbox" @change="menuStateChanger" id="burger-checkbox" class="burger-checkbox">
-        <label class="burger" for="burger-checkbox">
-          <span class="middle"></span>
-        </label>
+        <div class="not-desktop right-side-mobile-components">
+          <LangSelector v-if="localization" class="lang-selector-mobile mobile" group-name="mobile_group" :display-style="'mobile'"/>
+          <input ref="menuRef" type="checkbox" @change="menuStateChanger" id="burger-checkbox" class="burger-checkbox">
+          <label class="burger" for="burger-checkbox">
+            <span class="middle"></span>
+          </label>
         </div>
       </div>
     </div>
@@ -158,6 +169,15 @@ function onRouterLinkClick(val:number){
 </template>
 
 <style scoped>
+.right-side-mobile-components{
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+.lang-selector-mobile{
+  align-self: center;
+  height: 30px;
+}
 .header-partner-logo{
   height: 64px;
 }
@@ -240,10 +260,10 @@ function onRouterLinkClick(val:number){
   width: 100%;
   height: 1px;
 }
-.header-links{
+/*.header-links{
   display: flex;
   gap: 20px;
-}
+}*/
 .header-content-block{
   display: flex;
   align-items: center;
@@ -349,6 +369,7 @@ function onRouterLinkClick(val:number){
 .burger-checkbox {
   position: absolute;
   visibility: hidden;
+  right: 25px;
 }
 
 .burger {
