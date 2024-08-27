@@ -1,6 +1,6 @@
 const sources = [
-  new URL('@/assets/images/eurasionMap.svg', import.meta.url),
-  new URL('@/assets/images/eurasionMap-mobile.svg', import.meta.url),
+  new URL('@/assets/images/eurasionMap.png', import.meta.url),
+  new URL('@/assets/images/eurasionMap-mobile.png', import.meta.url),
 ]
 
 export function preloadImages(){

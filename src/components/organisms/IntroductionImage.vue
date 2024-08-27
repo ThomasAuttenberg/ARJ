@@ -53,11 +53,11 @@ const strings = computed(()=> useLangStore().langStrings.IntroductionImage);
   margin: auto;
   width: 100%;
   height: 665px;
-  background: url('@/assets/images/eurasionMap.svg') center center no-repeat;
-  background-size: 1180px 665px;
+  background: url('@/assets/images/eurasionMap.png') center no-repeat;
+  background-size: contain;
 }
 .mainImageContent::after{
-  content: url('@/assets/images/eurasionMap.svg') url('@/assets/images/eurasionMap-mobile.svg');
+  content: url('@/assets/images/eurasionMap.png') url('@/assets/images/eurasionMap-mobile.png');
   position:absolute; width:0; height:0; overflow:hidden; z-index:-1;
 }
 .mainImageContainer{
@@ -73,8 +73,8 @@ const strings = computed(()=> useLangStore().langStrings.IntroductionImage);
   .mainImageContent{
     width: 100%;
     height: 650px;
-    background: url('@/assets/images/eurasionMap-mobile.svg') center center no-repeat;
-    background-size: 768px 650px;
+    background: url('@/assets/images/eurasionMap-mobile.png') bottom no-repeat;
+    background-size: contain;
   }
 }
 @media (width < 768px) {
@@ -88,8 +88,8 @@ const strings = computed(()=> useLangStore().langStrings.IntroductionImage);
   .mainImageContent{
     width: 100%;
     height: 657px;
-    background: url('@/assets/images/eurasionMap-mobile.svg') center center no-repeat;
-    background-size: 768px 650px;
+    background: url('@/assets/images/eurasionMap-mobile.png') center center no-repeat;
+    background-size: cover;
   }
 }
 </style>
