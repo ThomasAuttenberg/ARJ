@@ -23,6 +23,8 @@ import {
   getTNCodeMask,
 } from '@/hooks/masks'
 import { useLangStore } from '@/stores/lang'
+import FileUploadErrorCross from '@/components/atoms/icons/FileUploadErrorCross.vue'
+import FileUploadOkTick from '@/components/atoms/icons/FileUploadOkTick.vue'
 
 
 const strings = computed(()=> useLangStore().langStrings.ModalFieldsWindow);
@@ -96,21 +98,26 @@ const submit = ()=>{
   }
 };
 
-
+const filename = ref('');
 const fileValidator = (file : File)=>{
   const parts = file.name.split('.');
   const extension : string = parts.length >= 1 ? parts.pop() as string : '';
   return file.size <= fileSizeLimit && (extension === 'doc' || extension === 'docx');
 }
 
-const onValidationError = ()=>{
+const uploadState = ref<boolean | null>(null);
+const onValidationError = (file: File)=>{
+  filename.value = file.name;
   emit('warningNotificationRequest',strings.value.fileErrorNotification, 5000);
+  uploadState.value = false;
 }
 
 let uploadedFile : File;
 const onFileUpload = (file : File)=>{
+  filename.value = file.name;
   uploadedFile = file;
   emit('successNotificationRequest',strings.value.fileSuccessNotification);
+  uploadState.value = true;
 }
 
 const buttonLoadingEffect = ref(false);
@@ -134,6 +141,16 @@ const finalSubmit = async () =>{
   })
 }
 
+const interpolate =  (template:string, variables:Record<string, any>) => {
+  return template.replace(/\${(.*?)}/g, (_, key) => variables[key.trim()]);
+}
+
+const uploadSuccessLabelString = computed(()=>{
+  return interpolate(strings.value.fileSuccessLabel, {filename: filename.value})
+})
+const uploadErrorLabelString = computed(()=>{
+  return interpolate(strings.value.fileErrorLabel, {filename: filename.value})
+})
 
 </script>
 
@@ -166,14 +183,24 @@ const finalSubmit = async () =>{
       </div>
       <div class="modal-fields-elements">
         <PrettyFileOutput :text="strings.fileDownloadText" :link/>
-        <PrettyFileInput
-          :text="strings.fileUploadText"
-          :additional-text="strings.fileUploadHint"
-          :text-uploaded="strings.fileUploadAnother"
-          :fileValidator
-          @validationError="onValidationError"
-          @fileUploaded="onFileUpload"
-        />
+        <div class="modal-fields-pretty-file-input-subpart">
+          <PrettyFileInput
+            :text="strings.fileUploadText"
+            :additional-text="strings.fileUploadHint"
+            :text-uploaded="strings.fileUploadAnother"
+            :fileValidator
+            @validationError="onValidationError"
+            @fileUploaded="onFileUpload"
+          />
+          <div v-show="uploadState === false" class="modal-fields-upload-error-label">
+          <FileUploadErrorCross/>
+            {{ uploadErrorLabelString }}
+          </div>
+          <div v-show="uploadState" class="modal-fields-upload-success-label">
+          <FileUploadOkTick/>
+            {{ uploadSuccessLabelString }}
+          </div>
+        </div>
       </div>
       <PrettyButtonFlexible :is-loading="buttonLoadingEffect" class="modal-file-window-btn" :text="strings.fileButtonText" @click="finalSubmit"/>
     </div>
@@ -263,6 +290,17 @@ const finalSubmit = async () =>{
 </template>
 
 <style scoped>
+
+.modal-fields-upload-error-label, .modal-fields-upload-success-label{
+  width: 100%;
+  display: flex;
+  align-content: flex-start;
+  align-items: center;
+  font-weight: 400;
+  font-size: 12px;
+  color: var(--gray);
+}
+
 .modal-window-close-cross{
   position: absolute;
   top: 10px;

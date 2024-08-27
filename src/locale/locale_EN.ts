@@ -106,6 +106,8 @@ export default {
   ModalFieldsWindow: {
     fileErrorNotification: 'File upload error: supported formats are .docx, .doc. File size: up to 15Mb',
     fileSuccessNotification: 'File uploaded',
+    fileErrorLabel: "Error while uploading ${filename}",
+    fileSuccessLabel: "${filename} is successfully uploaded",
     sendFileError: 'Error sending file! File ignored',
     orderError: 'Error submitting request!',
 

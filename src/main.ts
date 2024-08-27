@@ -16,7 +16,6 @@ const app = createApp(App).directive('intersection', VIntersection)
 
 app.use(createPinia())
 if(import.meta.env.VITE_LOCALIZATION_ON === "true"){
-  console.log("determine Locale")
   determineLocale()
 }
 app.use(router)

@@ -106,6 +106,8 @@ export default {
   ModalFieldsWindow: {
     fileErrorNotification: 'Файлды жүктеу қатесі: қолдайтын форматтар .docx, .doc. Файлдың өлшемі: 15Mb дейін',
     fileSuccessNotification: 'Файл жүктелді',
+    fileErrorLabel: "${filename} файлын жүктеу қатесі",
+    fileSuccessLabel: "${filename} файлы жүктелді",
     sendFileError: 'Файлды жіберу қатесі! Файл ескерілмейді',
     orderError: 'Өтініш жіберу қатесі!',
 

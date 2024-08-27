@@ -18,7 +18,6 @@ function onFileChange(){
   const inputElement = (input.value as HTMLLabelElement);
   const uploadedFile : File | undefined = shadowInputElement?.files?.[0];
   if(uploadedFile){
-    //console.log(uploadedFile);
     if(props.fileValidator){
       if(props.fileValidator(uploadedFile)){
         fileUploaded.value = true;
@@ -26,7 +25,7 @@ function onFileChange(){
       }else{
         fileUploaded.value = false;
         (shadowInput.value as HTMLInputElement).value = '';
-        emit('validationError');
+        emit('validationError',uploadedFile);
       }
     }else{
       fileUploaded.value = true;

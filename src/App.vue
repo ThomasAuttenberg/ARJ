@@ -153,7 +153,7 @@ const strings = computed(()=> useLangStore().langStrings.FlexibleHeader);
   background: #EE182C;
 }
 .modal-fields-notification.success{
-  background: var(--yellow);
+  background: #7BC700;
 }
 *{
   font-family: var(--font-family);

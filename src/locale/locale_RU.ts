@@ -108,6 +108,8 @@ export default {
   ModalFieldsWindow: {
     fileErrorNotification: 'Ошибка загрузки файла: поддерживаемые форматы .docx, .doc. Размер файла: до 15Mb',
     fileSuccessNotification: 'Файл загружен',
+    fileErrorLabel: 'Ошибка загрузки файла ${filename}',
+    fileSuccessLabel: 'Файл ${filename} загружен',
     sendFileError: 'Ошибка при отправке файла! Файл проигнорирован',
     orderError: 'Ошибка при отправке заявки!',
 
@@ -148,7 +150,7 @@ export default {
         placeholder: 'Количество мест, шт',
       },
       {
-        errorText: 'Код ТН ВЭД должен содержать десять цифр',
+        errorText: 'Код ТН ВЭД должен содержать 10 цифр',
         placeholder: 'Код ТН ВЭД',
       },
       {
