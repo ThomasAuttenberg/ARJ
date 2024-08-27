@@ -6,10 +6,9 @@ import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from './router'
 import VIntersection from '@/directives/VIntersection'
-import { preloadImages } from '@/hooks/ImagesPreloader'
 import { determineLocale } from '@/hooks/Locale/LangDeterminator'
 
-preloadImages();
+//preloadImages();
 
 const app = createApp(App).directive('intersection', VIntersection)
 

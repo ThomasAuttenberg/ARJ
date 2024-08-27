@@ -4,8 +4,15 @@ import PrettyButtonFlexible from '@/components/atoms/PrettyButtonFlexible.vue'
 import scrollToCalculations from '@/hooks/UIActions/scrollToCalculations'
 import { computed } from 'vue'
 import { useLangStore } from '@/stores/lang'
+import { preloadImage } from '@/hooks/ImagesPreloader'
 
 const strings = computed(()=> useLangStore().langStrings.IntroductionImage);
+
+preloadImage(
+  window.matchMedia('(width < 1181px)').matches
+  ?  new URL('@/assets/images/eurasionMap-mobile.png', import.meta.url)
+  :  new URL('@/assets/images/eurasionMap.png', import.meta.url)
+);
 </script>
 
 <template>
@@ -55,10 +62,6 @@ const strings = computed(()=> useLangStore().langStrings.IntroductionImage);
   height: 665px;
   background: url('@/assets/images/eurasionMap.png') center no-repeat;
   background-size: contain;
-}
-.mainImageContent::after{
-  content: url('@/assets/images/eurasionMap.png') url('@/assets/images/eurasionMap-mobile.png');
-  position:absolute; width:0; height:0; overflow:hidden; z-index:-1;
 }
 .mainImageContainer{
   container-type: inline-size;
