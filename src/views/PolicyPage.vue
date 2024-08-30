@@ -9,8 +9,8 @@ const strings = computed(()=> useLangStore().langStrings.PolicyPage);
 <template>
   <div class="wrapper-wrapper">
     <div class = "wrapper">
-      <h1>Политика в отношении обработки персональных данных</h1>
-      <div class = "content-block" v-html="strings.html">
+      <h1>{{strings?.title}}</h1>
+      <div class = "content-block" v-html="strings?.html">
       </div>
     </div>
   </div>
