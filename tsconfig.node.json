@@ -1,6 +1,7 @@
 {
   "extends": "@tsconfig/node20/tsconfig.json",
   "include": [
+    "src/hooks/InitMetrics.ts",
     "vite.config.*",
     "vitest.config.*",
     "cypress.config.*",

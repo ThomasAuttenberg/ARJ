@@ -29,8 +29,6 @@ function onFileChange(){
       }
     }else{
       fileUploaded.value = true;
-      //console.log("Input:");
-      //console.log(uploadedFile);
       emit('fileUploaded', uploadedFile);
     }
     if(!props.textUploaded){

@@ -1,13 +1,13 @@
 <script setup lang="ts">
 
 import PrettyInput from '@/components/atoms/PrettyInput.vue'
-import { emptyValidation, mailValidation, phoneValidation } from '@/hooks/validators'
+import { emptyValidation, mailValidation, phoneValidation } from '@/hooks/InputUtills/validators'
 import { computed, ref } from 'vue'
 import PrettyButtonFlexible from '@/components/atoms/PrettyButtonFlexible.vue'
 import type { InputValuesKeys } from '@/hooks/types'
 import { createOrder } from '@/hooks/API'
 import type { AxiosError } from 'axios'
-import { getCISCityMask, getPhoneMask } from '@/hooks/masks'
+import { getCISCityMask, getPhoneMask } from '@/hooks/InputUtills/masks'
 import { useLangStore } from '@/stores/lang'
 
 const emits = defineEmits(['callModalWindow','warningNotificationRequest','successNotificationRequest']);
@@ -38,8 +38,11 @@ function callModalWindow(){
   emits('callModalWindow',{ name: inputsValues.value.name.model, phone:inputsValues.value.phone.model, email:inputsValues.value.e_mail.model, });
 }
 const buttonLoadingEffect=ref(false);
+
+// calls when user tries to make an order in-place
 const submit = ()=>{
 
+  //calls if data verifying successfully passed
   const onVerifyEnd = (object:Record<string,any>)=>{
     buttonLoadingEffect.value = true;
     createOrder(object).then(()=>{

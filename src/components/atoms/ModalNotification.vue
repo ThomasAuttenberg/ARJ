@@ -3,6 +3,7 @@ import { ref } from 'vue'
 
 const notificationTextContent = ref<string>('');
 const activeClass = ref(false);
+
 let timeout : number | null = null;
 const sendNotification = (text:string, delay?:number)=>{
   const delay_ = delay || 2000;
@@ -11,6 +12,7 @@ const sendNotification = (text:string, delay?:number)=>{
   if(timeout){  clearTimeout(timeout); }
   timeout = setTimeout(()=>{activeClass.value = false; timeout=null}, delay_);
 }
+
 defineExpose({sendNotification});
 
 </script>

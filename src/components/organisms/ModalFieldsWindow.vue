@@ -7,7 +7,7 @@ import {
   emptyValidation,
   mailValidation,
   phoneValidation, placesValidation, TNCodeValidation, volumeValidation, weightValidation
-} from '@/hooks/validators'
+} from '@/hooks/InputUtills/validators'
 import type { InputValuesKeys, ModalWindowPropsType } from '@/hooks/types'
 import PrettyFileOutput from '@/components/atoms/PrettyFileOutput.vue'
 import PrettyFileInput from '@/components/atoms/PrettyFileInput.vue'
@@ -21,25 +21,29 @@ import {
   getNumberMask,
   getPhoneMask,
   getTNCodeMask,
-} from '@/hooks/masks'
+} from '@/hooks/InputUtills/masks'
 import { useLangStore } from '@/stores/lang'
 import FileUploadErrorCross from '@/components/atoms/icons/FileUploadErrorCross.vue'
 import FileUploadOkTick from '@/components/atoms/icons/FileUploadOkTick.vue'
+import BackArrow from '@/components/atoms/icons/BackArrow.vue'
 
 
 const strings = computed(()=> useLangStore().langStrings.ModalFieldsWindow);
 
 const fileSizeLimit = 16000000;
+//template download link:
 const link = import.meta.env.VITE_API_URL + '/download/' + import.meta.env.VITE_TEMPLATE_FILENAME;
+
 const props = defineProps({
   modalWindowProps: {type: Object as PropType<ModalWindowPropsType>}
 });
-
 const emit = defineEmits(['escape', 'submit', 'successNotificationRequest', 'warningNotificationRequest']);
+
 const modalFieldsWindow = ref<VNodeRef | null>(null);
 const modalFileWindow = ref<VNodeRef | null>(null);
 const modalSuccessWindow = ref<VNodeRef | null>(null);
 
+// watch for clicks to know if modal window needs to be hidden
 function onClick(event : MouseEvent){
   if((modalFieldsWindow.value as HTMLDivElement).contains(event.target as HTMLElement)
     || (modalFileWindow.value as HTMLDivElement).contains(event.target as HTMLElement)
@@ -98,14 +102,17 @@ const submit = ()=>{
   }
 };
 
-const filename = ref('');
+// Provides into fileInput element
 const fileValidator = (file : File)=>{
   const parts = file.name.split('.');
   const extension : string = parts.length >= 1 ? parts.pop() as string : '';
   return file.size <= fileSizeLimit && (extension === 'doc' || extension === 'docx');
 }
 
+const filename = ref('');
 const uploadState = ref<boolean | null>(null);
+
+// Calls when fileInput returns validation error
 const onValidationError = (file: File)=>{
   filename.value = file.name;
   emit('warningNotificationRequest',strings.value.fileErrorNotification, 5000);
@@ -113,6 +120,7 @@ const onValidationError = (file: File)=>{
 }
 
 let uploadedFile : File;
+// Calls when fileInput returns upload success (no validation error)
 const onFileUpload = (file : File)=>{
   filename.value = file.name;
   uploadedFile = file;
@@ -121,6 +129,8 @@ const onFileUpload = (file : File)=>{
 }
 
 const buttonLoadingEffect = ref(false);
+
+// When user creates order: loading file on server, getting the link and sets in the order object
 const finalSubmit = async () =>{
   buttonLoadingEffect.value=true;
   if(uploadedFile) {
@@ -140,6 +150,8 @@ const finalSubmit = async () =>{
     buttonLoadingEffect.value=false;
   })
 }
+
+// Interpolation filename in locale string:
 
 const interpolate =  (template:string, variables:Record<string, any>) => {
   return template.replace(/\${(.*?)}/g, (_, key) => variables[key.trim()]);
@@ -172,7 +184,7 @@ const uploadErrorLabelString = computed(()=>{
 
 
     <div ref="modalFileWindow" class="modal-file-window" :class="{'next-step':windowNextStep,'success-step':successStep}">
-      <CloseWIndowCross class="modal-window-close-cross" @click="emit('escape')"/>
+      <BackArrow class="modal-window-close-cross" @click="windowNextStep = false;"/>
       <div class = "modal-fields-text-description">
         <div class ="text-description-title">
           {{ strings.fileWindowTitle }}
@@ -304,7 +316,7 @@ const uploadErrorLabelString = computed(()=>{
 .modal-window-close-cross{
   position: absolute;
   top: 10px;
-  right: 10px;
+  left: 10px;
 }
 .modal-file-window-btn{
   width: 100%;
@@ -325,6 +337,9 @@ const uploadErrorLabelString = computed(()=>{
 .modal-file-window.next-step, .modal-success-window.success-step{
   animation: appearing 1s ease-out;
   display: flex;
+}
+.modal-file-window.next-step{
+  animation: appearing 0.5s ease-out;
 }
 .modal-file-window.success-step{
   display: none;

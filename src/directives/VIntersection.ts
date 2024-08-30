@@ -1,7 +1,11 @@
 
 import { type Ref, ref, type VNode } from 'vue'
 
-// Записываем в массив историю посещенных объектов. Если один выходит, значит следующий зайдет
+/*
+
+  Watchs what element is main element on the page
+
+ */
 
 const options  = {
   threshold: [0, 0.25, 0.5, 0.75, 1],
@@ -21,22 +25,20 @@ const observer = new IntersectionObserver((entries)=>{
         visibleElements = visibleElements.filter(item => item !== el);
       }
       let topElPos = 9999999;
-      let topEl: HTMLElement | null = null;
+      let topEl: HTMLElement | null = visibleElements.length != 0 ? visibleElements[0] : null;
       visibleElements.forEach((item) => {
-        //console.log(item.getBoundingClientRect().top + ' ' + item.classList)
         const itemTop = item.getBoundingClientRect().top;
         if (itemTop < topElPos && itemTop >= 0) {
           topElPos = itemTop;
           topEl = item;
         }
       });
-      //console.log(topEl ? (topEl as HTMLElement).classList : 'null');
       if (topEl) {
         const handler = handlersMap.get(topEl);
         if (handler) handler[0](handler[1]);
       }
     })
-  //});
+ // });
 }, options);
 
 export default {

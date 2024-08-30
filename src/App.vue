@@ -26,6 +26,8 @@ function onHeaderButtonClicked(){
   (headerRef.value as typeof HeaderDesktop).hideMenu();
   scrollToCalculations();
 }
+
+// Main view event handler: calls when there's changing watching element to set the correct route as active
 function onWatchingElementChange(index:any){activeRouteId.value=index;}
 
 function scrollToTop(){
@@ -38,16 +40,17 @@ watch(route, ()=>{
   }
 });
 
+// Mobile browser adaptation: if any element needs to consider the url field
 if(window.matchMedia("(max-width: 768px)").matches){
   const vh = window.innerHeight * 0.01;
   document.documentElement.style.setProperty('--vh', `${vh}px`);
   window.addEventListener('resize', updateViewportHeight);
 }
-
 function updateViewportHeight() {
   const vh = window.innerHeight * 0.01;
   document.documentElement.style.setProperty('--vh', `${vh}px`);
 }
+
 
 const modalWindowProps : ModalWindowPropsType = {};
 function callOrderModalWindow(arg: ModalWindowPropsType) {
@@ -58,7 +61,7 @@ function callOrderModalWindow(arg: ModalWindowPropsType) {
   isModalFieldsShowing.value=true;
 }
 
-const modalFieldsWindowResult = ref<Record<string, any>>({});
+// Working with notifications
 const isWarning = ref(false);
 const notificationWindow = ref<VNodeRef | null>(null);
 
@@ -74,18 +77,13 @@ const sendSuccessNotification = (text:string, delay?:number)=>{
   notificationWindow.value.sendNotification(text,delay_);
 }
 
+// Working with modal order window
+
+const modalFieldsWindowResult = ref<Record<string, any>>({});
 function onModalFieldsWindowSubmit(val:Record<string, any>){
   modalFieldsWindowResult.value = val;
   isModalFieldsShowing.value=false;
 }
-
-/*
-getLocale(LANG.EN).then((module:any) => {
-  useLangStore().setLang(module.default);
-  console.log(module.default)
-  }
-);
-*/
 
 const strings = computed(()=> useLangStore().langStrings.FlexibleHeader);
 

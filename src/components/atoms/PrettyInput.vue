@@ -14,8 +14,6 @@ const props = defineProps({
   inputId: {type: String},
   placeholder: {type: String, required: false, default: ''},
   validator: {type: Object as PropType<IValidator>},
-  inputError: {type: Boolean, default: false},
-  type : {type: String},
   title: {type: String},
   mask: {type: Object as PropType<any>},
 })
@@ -23,16 +21,25 @@ const props = defineProps({
 const inputTitle = computed(()=>{
   return props.title ? props.title : props.placeholder
 })
-
+//=================================================================================================
 const validationMode = defineModel('turnValidateUntilCorrect');
-const isFocus = ref(false)
+/*
+
+     If v-model:turnValidateUntilCorrect is unset: input sets itself into the warning mode if any
+     typed symbol doesn't pass the validator.
+     If v-model:turnValidateUntilCorrect value is false: input doesn't provide any warning
+     If v-model:turnValidateUntilCorrect value is true: input waits til inputValue passed validator
+     and sets false on v-model value
+ */
+
 const inputVal = defineModel<string>('inputVal')
-const isComplete  = ref(Boolean(inputVal.value?.length))
-const isError = defineModel<boolean>('inputError')
+const isError = defineModel<boolean>('inputError') //shows if input text doesn't pass the validator
 isError.value = false
+//================================================================================================
+
+const isFocus = ref(false)
+const isComplete  = ref(Boolean(inputVal.value?.length))
 const inptRef = ref<VNodeRef | null>(null)
-
-
 
 const mistakeTextShowing = computed(()=> {
   return (validationMode.value || typeof validationMode.value == 'undefined') && isError.value;
@@ -47,11 +54,10 @@ const validate = (value:string|undefined)=>{
 
 const maskOptions = props.mask;
 
-// Создаем объект маски
+// Input mask
 const iMaskObject = props.mask ? IMask.createMask(maskOptions) : null;
 
-// Функция для форматирования значения
-const formatPhoneNumber = (input: string)=>{
+const getMaskedValue = (input: string)=>{
   if(iMaskObject) {
     iMaskObject.resolve(input);
     return iMaskObject.value;
@@ -61,10 +67,9 @@ const formatPhoneNumber = (input: string)=>{
 
 watch(inputVal, (value)=>{
   if(value && iMaskObject){
-    inputVal.value = formatPhoneNumber(value) as unknown as string;
+    inputVal.value = getMaskedValue(value) as unknown as string;
   }
   validate(inputVal.value)
-  //console.log("mistakeTextShowing: "+mistakeTextShowing.value)
   isComplete.value = !!value?.length
 })
 
@@ -72,12 +77,13 @@ onMounted(()=>{
   validate(inputVal.value);
 })
 
+// Cross click
 function onRemovalBtnClick(){
   inputVal.value = '';
-
   setTimeout(()=>{(inptRef.value as HTMLInputElement).focus();});
 }
 
+// Any click on input makes cursor be set on the contained text end pos
 function setCursorToEnd(event: Event) {
   const target = event.target as HTMLInputElement
   setTimeout(() => {
@@ -92,7 +98,7 @@ function setCursorToEnd(event: Event) {
   <div class="input-top-wrapper">
     <div class = "input-wrapper" :class="{focus:isFocus, error:isError && mistakeTextShowing, complete:isComplete}">
       <span v-if="isFocus || isComplete" class = "additionalPlaceholder">{{inputTitle}}</span>
-      <input :id="inputId" :type ref = "inptRef" class="input" v-model="inputVal" :placeholder="!isFocus ? placeholder : ''"
+      <input :id="inputId" ref = "inptRef" class="input" v-model="inputVal" :placeholder="!isFocus ? placeholder : ''"
              @focusin="isFocus = true; setCursorToEnd($event)"
              @focusout="isFocus = false;" />
 
@@ -116,11 +122,9 @@ function setCursorToEnd(event: Event) {
 }
 @keyframes mistakeText {
   0%{
-    height: 0;
     opacity: 0;
   }
   100%{
-    height: 10px;
     opacity: 1;
   }
 }

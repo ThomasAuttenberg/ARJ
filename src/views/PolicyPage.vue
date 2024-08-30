@@ -1,16 +1,16 @@
 <script setup lang="ts">
 
+import { computed } from 'vue'
+import { useLangStore } from '@/stores/lang'
+
+const strings = computed(()=> useLangStore().langStrings.PolicyPage);
 </script>
 
 <template>
   <div class="wrapper-wrapper">
     <div class = "wrapper">
-      <h1>Здесь могла бы быть политика организации</h1>
-      <div class = "content-block">
-
-      </div>
-      <div class = "content-block">
-
+      <h1>Политика в отношении обработки персональных данных</h1>
+      <div class = "content-block" v-html="strings.html">
       </div>
     </div>
   </div>
@@ -27,41 +27,66 @@
   .wrapper{
     flex:1fr;
     width: clamp(0px, 1180px, 1180px);
-    padding: 100px 20px;
+    padding: 50px 20px;
     display: flex;
     flex-direction: column;
-    gap: 40px;
     font-family: var(--font-family);
     color: var(--text-color);
   }
-  h1{
+  :deep(h1){
     font-size: 18px;
     font-weight: 700;
     text-transform: uppercase;
   }
-  h2{
+  :deep(h2){
     font-size: 15px;
     font-weight: 600;
+    padding-top: 20px;
   }
-  p{
+  :deep(p){
     padding-top: 20px;
     line-height: 140%;
     font-size: 14px
+  }
+  :deep(ol){
+    padding-left: 20px;
+  }
+  :deep(ol > li){
+    font-weight: bold;
+  }
+  :deep(ul){
+    display: block;
+    padding-left: 20px;
+    padding-top: 20px;
+    line-height: 140%;
+    font-size: 14px;
   }
   @media (width >=768px){
     .wrapper-wrapper{
       min-height: calc(100vh - 113px - 153px);
     }
-    h1{
+    :deep(h1){
       font-size: 24px;
+    }
+    :deep(h2){
+      padding-top: 30px;
+    }
+    .wrapper{
+      padding: 70px 20px;
     }
   }
   @media(width >= 1181px) {
     .wrapper-wrapper {
       min-height: calc(100vh - 132px - 153px);
     }
-    h1{
+    :deep(h1){
       font-size: 32px;
+    }
+    :deep(h2){
+      padding-top: 40px;
+    }
+    .wrapper{
+      padding: 100px 20px;
     }
   }
 </style>

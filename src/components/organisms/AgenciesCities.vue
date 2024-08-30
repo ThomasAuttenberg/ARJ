@@ -19,6 +19,8 @@ const zoomDefaultValue = 3;
 
 async function initMap(mapCenter : LngLat) {
 
+ //======================================= API REQUESTS & MAP SETTINGS =============================
+
   await scriptLoader("https://api-maps.yandex.ru/v3/?apikey=" + import.meta.env.VITE_MAPS_API_KEY + "&lang=ru_RU")
 
     .catch((error: Error) => {
@@ -36,8 +38,6 @@ async function initMap(mapCenter : LngLat) {
     center: mapCenter,
     zoom: zoomDefaultValue,
   };
-
-
   const { YMap, YMapDefaultSchemeLayer, YMapLayer, YMapFeatureDataSource } = ymaps3;
   const { YMapClusterer, clusterByGrid } = await ymaps3.import('@yandex/ymaps3-clusterer@0.0.1');
 
@@ -52,6 +52,9 @@ async function initMap(mapCenter : LngLat) {
     .addChild(new YMapFeatureDataSource({id:'titles'}))
     .addChild(new YMapLayer({source:'titles', type: 'markers',zIndex: 9000}));
 
+  //================================================================================================
+
+  //======================================= CITY LABEL =============================================
 
   const tooltip = document.createElement('div');
   tooltip.className = 'map-agency-tooltip';
@@ -76,13 +79,14 @@ async function initMap(mapCenter : LngLat) {
     tooltip.style.display = 'none';
     toolTipLinkedFeauture = null;
   }
-// Start observing the target node for configured mutations
+
+  //================================================================================================
+
+  //======================================= PINS INIT ==============================================
+
   const marker = (feature: Feature) => {
-    //const contentPin = document.createElement('div');
-    //contentPin.innerHTML = '<img src="/src/assets/icons/geoPin.svg" />';
     const markerContainer = document.createElement('div');
     markerContainer.className = 'map-agency-marker-container';
-    //markerContainer.appendChild(contentPin);
 
     markerContainer.addEventListener('mouseover', ()=>{
       showToolTip(feature);
@@ -103,18 +107,9 @@ async function initMap(mapCenter : LngLat) {
       markerContainer
     );
   };
+  //================================================================================================
 
-
-  const cluster = (coordinates: LngLat, features: Feature[]) =>
-    new ymaps3.YMapMarker(
-      {
-        coordinates,
-        source: 'my-source',
-      },
-      (circle(features.length)).cloneNode(true) as HTMLDivElement
-    );
-
-
+//======================================= PINS GROUP CIRCLE ========================================
   function circle(count: number) {
     const circle = document.createElement('div');
     circle.classList.add('circle');
@@ -125,6 +120,16 @@ async function initMap(mapCenter : LngLat) {
     `;
     return circle;
   }
+//==================================================================================================
+
+  const cluster = (coordinates: LngLat, features: Feature[]) =>
+    new ymaps3.YMapMarker(
+      {
+        coordinates,
+        source: 'my-source',
+      },
+      (circle(features.length)).cloneNode(true) as HTMLDivElement
+    );
 
   type coordinatesType = { lnglat: LngLat, city: string }
   const coordinates: coordinatesType[] = [];

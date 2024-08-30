@@ -25,8 +25,6 @@ const props = defineProps({
 
 defineExpose({hideMenu});
 
-
-
 const menuRef = ref<VNodeRef | null>(null);
 const menuState = ref(false);
 const wrapper = ref<VNodeRef | null>(null);
@@ -38,6 +36,7 @@ function hideMenu(){
   }
 }
 
+// Calls every time when menu state (shows/hidden) changed. Disables main document scroll and sets menuState
 function menuStateChanger(){
   menuState.value = (menuRef.value as HTMLInputElement).checked;
   if(menuState.value){
@@ -47,6 +46,7 @@ function menuStateChanger(){
   }
 }
 
+// If there is resize while menu is shown, we need to make menu hidden
 window.addEventListener('resize', ()=>{
   if(window.matchMedia("(min-width: 1181px)").matches){
     document.body.classList.remove('body-no-scroll');
@@ -65,6 +65,7 @@ function onLogoClick(){
   }
 }
 
+// Router link additional functionality : scroll if anchor is set
 function onRouterLinkClick(val:number){
   setTimeout(()=> {
     const routes = props.routes as IRoutesProp[];
