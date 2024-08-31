@@ -11,3 +11,8 @@ export interface InputValuesKeys{
   transform?:Function,
   showResUntilOk?:boolean
 }
+export interface IRoutesProp{
+  route: string,
+  anchor?: string
+  title: string,
+}

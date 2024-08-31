@@ -1,17 +1,13 @@
 <script setup lang="ts">
 import { RouterLink } from 'vue-router'
-import {type PropType, ref, type VNodeRef } from 'vue'
-import type {IProvidedComponent} from '@/hooks/types'
+import { nextTick, type PropType, ref, type VNodeRef } from 'vue'
+import type { IProvidedComponent, IRoutesProp } from '@/hooks/types'
 import LangSelector from '@/components/organisms/LangSelector.vue'
-
-interface IRoutesProp{
-  route: string,
-  anchor?: string
-  title: string,
-}
+import router from '@/router'
 
 
-const emits = defineEmits(["logoClick"])
+
+const emits = defineEmits(["logoClick","onRouterLinkUsed"])
 
 const props = defineProps({
   routes: {type: Array as PropType<IRoutesProp[]>},
@@ -67,14 +63,11 @@ function onLogoClick(){
 
 // Router link additional functionality : scroll if anchor is set
 function onRouterLinkClick(val:number){
-  setTimeout(()=> {
-    const routes = props.routes as IRoutesProp[];
+  const routes = props.routes as IRoutesProp[];
+  setTimeout( () => {
     if (routes[val].anchor) {
-      let element = document.getElementById(routes[val].anchor as string);
-      let top = element?.offsetTop;
-      if (top)
-        window.scrollTo(0, top - (wrapper.value as HTMLElement).getBoundingClientRect().height);
-      if(menuState.value){
+      emits('onRouterLinkUsed', routes[val], (wrapper.value as HTMLElement).getBoundingClientRect().height);
+      if (menuState.value) {
         (menuRef.value as HTMLInputElement).checked = false;
         menuStateChanger();
       }
