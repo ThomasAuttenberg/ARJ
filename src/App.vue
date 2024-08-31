@@ -6,14 +6,13 @@ import GeoIco from '@/components/atoms/icons/GeoIco.vue'
 import PhoneIco from '@/components/atoms/icons/PhoneIco.vue'
 import MailIco from '@/components/atoms/icons/MailIco.vue'
 import HeaderDesktop from '@/components/organisms/FlexibleHeader.vue'
-import { computed, onUpdated, ref, type VNodeRef, watch } from 'vue'
+import { computed, ref, type VNodeRef, watch } from 'vue'
 import router from '@/router'
 import PrettyFooter from '@/components/organisms/PrettyFooter.vue'
 import ModalFieldsWindow from '@/components/organisms/ModalFieldsWindow.vue'
-import type { IRoutesProp, ModalWindowPropsType } from '@/hooks/types'
+import type { ModalWindowPropsType } from '@/hooks/types'
 import PrettyButtonFlexible from '@/components/atoms/PrettyButtonFlexible.vue'
 import ModalNotification from '@/components/atoms/ModalNotification.vue'
-import scrollToCalculations from '@/hooks/UIActions/scrollToCalculations'
 import ByteTransitLogoDefault from '@/components/atoms/icons/ByteTransitLogoDefault.vue'
 import { useLangStore } from '@/stores/lang'
 
@@ -24,55 +23,12 @@ const headerRef = ref<VNodeRef | null>(null);
 
 
 function onHeaderButtonClicked(){
-  headerRef.value.hideMenu();
-  if(route.name != 'main'){
-    const header = document.getElementById('header-desktop');
-    scrollRequest = {
-      anchor: 'calculation-block',
-      indent: (header as HTMLElement).getBoundingClientRect().height
-    }
-    router.push('/');
-  }else{
-    scrollToCalculations();
-  }
+    router.push('/#calculation-block');
+    headerRef.value.hideMenu();
 }
 
 
-function scrollTo(id:string, indent:number){
-  let element = document.getElementById(id as string);
-  let top = element?.offsetTop;
-  if (top)
-    window.scrollTo({
-      top: top - indent,
-      behavior: 'smooth'
-    });
-}
-
-let scrollRequest : {
-  anchor: string,
-  indent?: number,
-} | null;
-
-function onRouterLinkUsed(route:IRoutesProp, indent?:number) {
-  if (route.route != router.currentRoute.value.path) {
-    if (route.anchor) {
-      scrollRequest = { anchor: route.anchor, indent };
-    }
-  }else{
-    if(route.anchor)
-      scrollTo(route.anchor,indent? indent : 0);
-  }
-}
-
-onUpdated(()=>{
-  if(scrollRequest != null){
-    scrollTo(scrollRequest.anchor, scrollRequest.indent ? scrollRequest.indent : 0);
-    scrollRequest = null;
-  }
-})
-
-
-// Main view event handler: calls when there's changing watching element to set the correct route as active
+// Main view event handler: calls when there's watching element changing to set the correct route as active
 function onWatchingElementChange(index:any){activeRouteId.value=index;}
 
 function scrollToTop(){
@@ -81,6 +37,7 @@ function scrollToTop(){
     behavior: 'smooth'
   }));
 }
+
 
 watch(route, ()=>{
   if(route.name != 'main'){
@@ -141,10 +98,10 @@ const strings = computed(()=> useLangStore().langStrings.FlexibleHeader);
   <header>
     <HeaderDesktop id="header-desktop" ref="headerRef"
       :routes="[
-        {title: strings.routes[0], route:'/', anchor:'main'},
-        {title: strings.routes[1], route:'/', anchor: 'directions'},
-        {title: strings.routes[2], route:'/', anchor: 'faq'},
-        {title: strings.routes[3], route:'/', anchor:'agencies'},
+        {title: strings.routes[0], route:'/#main'},
+        {title: strings.routes[1], route:'/#directions'},
+        {title: strings.routes[2], route:'/#faq'},
+        {title: strings.routes[3], route:'/#agencies'},
       ]"
       :active-route-id = "activeRouteId"
       :left-side-components="[
@@ -158,7 +115,6 @@ const strings = computed(()=> useLangStore().langStrings.FlexibleHeader);
       :logo = "{component: TizaLogo}"
       :right-side-separated-component="{component: PrettyButtonFlexible, props:{text: strings.buttonText}, eventListeners: {click:onHeaderButtonClicked}}"
       @logo-click = "router.push('/'); scrollToTop();"
-                   @on-router-link-used="onRouterLinkUsed"
     />
   </header>
   <div class="notification-wrapper">

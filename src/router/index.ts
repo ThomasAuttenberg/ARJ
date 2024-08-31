@@ -1,12 +1,30 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
+const getIndent = ()=>{
+  if(window.innerWidth >= 1181){
+    return 145;
+  }else if(768 <= window.innerWidth && window.innerWidth < 1181){
+    return 113;
+  }else{
+    return 50;
+  }
+}
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   scrollBehavior (to, from, savedPosition) {
-    if(to.name == from.name){
-      return {};
+    if(to.hash){
+      const element = document.querySelector(to.hash);
+      if (element) {
+        const offset = element.getBoundingClientRect().top + window.scrollY - getIndent();
+        return {
+          top: offset,
+          behavior: 'smooth'
+        };
+      }
     }
-    return {top:0}
+    if(to.name != from.name) return {top:0};
+    return {};
   },
   routes: [
     {

@@ -1,13 +1,12 @@
 <script setup lang="ts">
 import { RouterLink } from 'vue-router'
-import { nextTick, type PropType, ref, type VNodeRef } from 'vue'
+import {type PropType, ref, type VNodeRef } from 'vue'
 import type { IProvidedComponent, IRoutesProp } from '@/hooks/types'
 import LangSelector from '@/components/organisms/LangSelector.vue'
-import router from '@/router'
 
 
 
-const emits = defineEmits(["logoClick","onRouterLinkUsed"])
+const emits = defineEmits(["logoClick"])
 
 const props = defineProps({
   routes: {type: Array as PropType<IRoutesProp[]>},
@@ -25,13 +24,6 @@ const menuRef = ref<VNodeRef | null>(null);
 const menuState = ref(false);
 const wrapper = ref<VNodeRef | null>(null);
 
-function hideMenu(){
-  if(menuState.value) {
-    (menuRef.value as HTMLInputElement).checked = false;
-    menuStateChanger();
-  }
-}
-
 // Calls every time when menu state (shows/hidden) changed. Disables main document scroll and sets menuState
 function menuStateChanger(){
   menuState.value = (menuRef.value as HTMLInputElement).checked;
@@ -42,37 +34,29 @@ function menuStateChanger(){
   }
 }
 
-// If there is resize while menu is shown, we need to make menu hidden
-window.addEventListener('resize', ()=>{
-  if(window.matchMedia("(min-width: 1181px)").matches){
-    document.body.classList.remove('body-no-scroll');
-    if(menuState.value){
-      menuState.value = false;
-      (menuRef.value as HTMLInputElement).checked = false;
-    }
-  }
-});
-
-function onLogoClick(){
-  emits('logoClick');
+function hideMenu(){
   if(menuState.value) {
     (menuRef.value as HTMLInputElement).checked = false;
     menuStateChanger();
   }
 }
 
+// If there is resize while menu is shown, we need to make menu hidden
+window.addEventListener('resize', ()=>{
+  if(window.matchMedia("(min-width: 1181px)").matches){
+    document.body.classList.remove('body-no-scroll');
+    hideMenu();
+  }
+});
+
+function onLogoClick(){
+  emits('logoClick');
+  hideMenu();
+}
+
 // Router link additional functionality : scroll if anchor is set
-function onRouterLinkClick(val:number){
-  const routes = props.routes as IRoutesProp[];
-  setTimeout( () => {
-    if (routes[val].anchor) {
-      emits('onRouterLinkUsed', routes[val], (wrapper.value as HTMLElement).getBoundingClientRect().height);
-      if (menuState.value) {
-        (menuRef.value as HTMLInputElement).checked = false;
-        menuStateChanger();
-      }
-    }
-  });
+function onRouterLinkClick() {
+  hideMenu();
 }
 
 const localization = ref(false);
