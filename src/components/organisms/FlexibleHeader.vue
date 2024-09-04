@@ -115,14 +115,14 @@ if(import.meta.env.VITE_LOCALIZATION_ON === "true"){
     </div>
     <div class ="header-separator desktop"/>
     <div class="header-router-links desktop">
-      <RouterLink @click="onRouterLinkClick(key)" v-for="(route,key) in props.routes" :key :to="route.route" :class="{active:key==props.activeRouteId}" >{{route.title}}</RouterLink>
+      <RouterLink @click="onRouterLinkClick()" v-for="(route,key) in props.routes" :key :to="route.route" :class="{active:key==props.activeRouteId}" >{{route.title}}</RouterLink>
     </div>
       <div class="not-desktop"/>
     </div>
     </div>
     <div class = "header-menu not-desktop" :class="{active:menuState}">
       <div class = "header-menu-routes header-router-links">
-        <RouterLink @click="onRouterLinkClick(key)" v-for="(route,key) in props.routes" :key :to="route.route" :class="{active:key==props.activeRouteId}" >{{route.title}}</RouterLink>
+        <RouterLink @click="onRouterLinkClick()" v-for="(route,key) in props.routes" :key :to="route.route" :class="{active:key==props.activeRouteId}" >{{route.title}}</RouterLink>
       </div>
       <div class = "header-menu-links mobile">
         <div v-if=rightSideSeparatedComponent class="header-menu-separated-component">
