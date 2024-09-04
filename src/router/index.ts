@@ -13,14 +13,26 @@ const getIndent = ()=>{
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   scrollBehavior (to, from, savedPosition) {
+    if (savedPosition) {
+      setTimeout(() => {
+        window.scrollTo({
+          top: savedPosition.top,
+          left: savedPosition.left,
+          behavior: 'instant', // Прокрутка без анимации
+        });
+      });
+    }
     if(to.hash){
+      router.replace({ path: to.path, query: to.query});
       const element = document.querySelector(to.hash);
       if (element) {
         const offset = element.getBoundingClientRect().top + window.scrollY - getIndent();
-        return {
-          top: offset,
-          behavior: 'smooth'
-        };
+        setTimeout(()=> {
+          window.scrollTo({
+            top: offset,
+            behavior: 'smooth',
+          })
+        });
       }
     }
     if(to.name != from.name) return {top:0};
