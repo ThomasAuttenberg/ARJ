@@ -88,7 +88,7 @@ if(import.meta.env.VITE_LOCALIZATION_ON === "true"){
       </div>
       <div class="header-content-block">
           <component class="header-logo-logo desktop" @click="onLogoClick" :is="logo?.component" v-on="logo?.eventListeners ? logo.eventListeners : {}"/>
-          <component class="desktop" v-for="(comp,index) in props.leftSideComponents" :key="index" :is="comp.component" v-bind="comp.props" v-on="comp.eventListeners ? comp.eventListeners : {}"/>
+          <component class="header-content-left desktop" v-for="(comp,index) in props.leftSideComponents" :key="index" :is="comp.component" v-bind="comp.props" v-on="comp.eventListeners ? comp.eventListeners : {}"/>
           <component class="desktop" v-for="(comp,index) in props.rightSideComponents" :key="index" :is="comp.component" v-bind="comp.props" v-on="comp.eventListeners ? comp.eventListeners : {}"/>
           <LangSelector v-if="localization" class="desktop lang-selector" group-name="desktop_group" :display-style="'desktop'"/>
         <div v-if=rightSideSeparatedComponent class="header-order-button not-mobile">
@@ -147,6 +147,13 @@ if(import.meta.env.VITE_LOCALIZATION_ON === "true"){
 </template>
 
 <style scoped>
+.header-order-button{
+  text-wrap: nowrap;
+}
+.header-content-left{
+  text-wrap: wrap;
+  white-space: wrap;
+}
 .right-side-mobile-components{
   display: flex;
   gap: 20px;
@@ -310,6 +317,7 @@ if(import.meta.env.VITE_LOCALIZATION_ON === "true"){
   .header-content-block{
     width: 100%;
   }
+
 }
 @media (width < 768px) {
   .desktop{

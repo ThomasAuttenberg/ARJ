@@ -123,6 +123,7 @@ const strings = computed(()=> useLangStore().langStrings.TransportCalculationBlo
     <div class = "policy-accepting-text">
       {{strings.policyAccepting[0]}}
       «<RouterLink class="policy-accepting-text-link" to="/policy">{{ strings.policyAccepting[1] }}</RouterLink>»
+      {{strings.policyAccepting[2]}}
     </div>
   </div>
 </div>

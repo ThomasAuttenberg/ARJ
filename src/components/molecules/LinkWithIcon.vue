@@ -10,18 +10,24 @@ const props = defineProps({
 
 <template>
 <div class = "ico-with-link-label">
-  <component :is=ico></component>
-  <a :href="link">{{ text }}</a>
+  <component class="ico-with-link-label-ico" :is=ico></component>
+  <a class="ico-with-link-label-label" :href="link">{{ text }}</a>
 </div>
 </template>
 
 <style scoped>
+
   .ico-with-link-label{
     display: flex;
+    align-items: center;
     gap: 5px;
   }
   .ico-with-link-label > a{
     text-decoration: none;
     align-self: center;
+  }
+  .ico-with-link-label-ico{
+    text-wrap: nowrap;
+    flex: none;
   }
 </style>

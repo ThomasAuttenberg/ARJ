@@ -89,7 +89,7 @@ const strings = computed(()=> useLangStore().langStrings.LangSelector);
           </span>
           <input class="lang-selector-input" type="radio" :name="`selector_${groupName}`" :checked="lang.kz" @click="onLangChange(LANG.KZ)" >
         </label>
-        <label class="lang-selector-list-item">
+        <label v-if="false" class="lang-selector-list-item">
           <span class="item-flag-n-text">
             <USFlag class="lang-selector-flag"/>English
           </span>
@@ -168,6 +168,7 @@ const strings = computed(()=> useLangStore().langStrings.LangSelector);
   display: none;
   position: absolute;
   padding: 20px;
+  left: -20px;
   width: 240px;
   height: auto;
 }

@@ -25,7 +25,7 @@ const strings = computed(()=> useLangStore().langStrings.PrettyFooter);
     <div class = "pretty-footer-upper-block">
       <div class="pretty-footer-logo">
         <RouterLink class="pretty-footer-logo" to="/" @click="onLogoClick">
-        <TizaLogo/>
+        <TizaLogo class="pretty-footer-logo"/>
         </RouterLink>
       </div>
       <div class="pretty-footer-upper-content-block">
@@ -136,6 +136,7 @@ const strings = computed(()=> useLangStore().langStrings.PrettyFooter);
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+  row-gap: 10px;
 }
 .pretty-footer-upper-content-block{
   display: flex;
@@ -146,7 +147,6 @@ const strings = computed(()=> useLangStore().langStrings.PrettyFooter);
 .pretty-footer-button{
   display: none;
   height: 51px;
-  width: 242px;
 }
 .pretty-footer-logo{
   width: 106px;
