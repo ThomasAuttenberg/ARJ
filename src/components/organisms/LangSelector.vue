@@ -106,7 +106,7 @@ const strings = computed(()=> useLangStore().langStrings.LangSelector);
 .lang-selector-exit{
   position: absolute;
   top: 10px;
-  left: 10px;
+  right: 10px;
 }
 .lang-selector-exit.desktop{
   display: none;
