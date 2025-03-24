@@ -94,7 +94,7 @@ export default {
     addressText: 'ул. Аргымак, 1 (бывш. Промышленная,1)',
     policyText: 'Политика',
     offerText: 'Оферта',
-    copyright: '©ТОО « AvtoRail Jet (АвтоРейл Джет)», 2024'
+    copyright: `©ТОО « AvtoRail Jet (АвтоРейл Джет)», ${new Date().getFullYear()}`
   },
 
   FlexibleHeader: {

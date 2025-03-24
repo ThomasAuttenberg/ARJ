@@ -92,7 +92,7 @@ export default {
     addressText: 'Argymak St., 1 (formerly Promyshlennaya, 1)',
     policyText: 'Policy',
     offerText: 'Offer',
-    copyright: '©LLP “AvtoRail Jet”, 2024'
+    copyright: `©LLP “AvtoRail Jet”, ${new Date().getFullYear()}`
   },
 
   FlexibleHeader: {
